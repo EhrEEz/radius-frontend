@@ -2,6 +2,8 @@
 	import { onMount } from 'svelte';
 	import Navbar from '$lib/components/layout/Navbar.svelte';
 	import { register } from 'swiper/element/bundle';
+	import CartDrawer from '$lib/components/cart/CartDrawer.svelte';
+
 	import 'swiper/css/bundle';
 	onMount(() => {
 		register();
@@ -10,9 +12,10 @@
 </script>
 
 <Navbar />
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<main class="px-4 sm:px-6 lg:px-8">
 	{@render children()}
 </main>
+<CartDrawer />
 
 <style>
 	:global(.swiper-lazy-preloader) {

@@ -38,9 +38,9 @@
 	}
 </script>
 
-<section class="features">
-	<h2 class="text-3xl mb-6 font-serif font-medium">Featured Products</h2>
-	<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+<section class="features py-16">
+	<h2 class="text-3xl mb-6 font-medium text-center">Featured Products</h2>
+	<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-6 gap-3 align-center">
 		<ProductCard
 			product={mockProduct}
 			isOnSale={true}

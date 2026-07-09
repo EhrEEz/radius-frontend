@@ -3,7 +3,7 @@
 @theme {
 	/* Font Family */
 	--font-sans: 'HK Grotesk', system-ui, sans-serif;
-
+	--font-serif: 'Fraunces', serif;
 	/* Custom Colors - extend as needed */
 	--color-primary: #000000;
 	--color-secondary: #ffffff;
@@ -92,6 +92,20 @@
 		url('/fonts/HK/HKGrotesk-BoldItalic.woff') format('woff');
 	font-weight: 700;
 	font-style: italic;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'Fraunces';
+	src: url('/fonts/FR/Fraunces-Italic.ttf') format('ttf');
+	font-weight: 100-900;
+	font-style: italic;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Fraunces';
+	src: url('/fonts/FR/Fraunces.ttf') format('ttf');
+	font-weight: 100-900;
 	font-display: swap;
 }
 

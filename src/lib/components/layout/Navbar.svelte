@@ -16,6 +16,7 @@
 		Flame,
 		TicketPercent
 	} from '@lucide/svelte';
+	import { cart } from '$lib/components/cart/cart.svelte';
 
 	// Reactive state using Svelte 5 runes
 	let mobileMenuOpen = $state(false);
@@ -112,7 +113,7 @@
 
 <header class="sticky top-0 z-50 bg-white">
 	<div class="relative">
-		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="px-4 sm:px-6 lg:px-8">
 			<div class="flex items-center justify-between h-16 lg:h-20">
 				<!-- Left Side: Logo, Categories, Search -->
 				<div class="flex items-center gap-2 lg:gap-4 flex-1">
@@ -212,10 +213,12 @@
 					</a>
 
 					<!-- Cart -->
-					<a
-						href="/cart"
+					<button
 						class="relative p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-full transition-colors"
 						aria-label="Cart"
+						onclick={() => {
+							cart.toggle();
+						}}
 					>
 						<ShoppingCart class="w-5 h-5" />
 						{#if cartCount > 0}
@@ -225,7 +228,7 @@
 								{cartCount}
 							</span>
 						{/if}
-					</a>
+					</button>
 
 					<!-- User Auth (Desktop) -->
 					<div class="relative hidden lg:block">
@@ -316,21 +319,19 @@
 	</div>
 
 	<!-- Second Row: Collections -->
-	<div>
-		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-			<div class="flex place-content-center gap-1 overflow-x-auto scrollbar-hide py-1">
-				{#each collections as collection}
-					<a
-						href={collection.href}
-						class="flex items-center gap-1.5 px-3 lg:px-4 py-2 text-gray-700 border border-transparent hover:text-gray-900 hover:bg-gray-50 hover:border-gray-100 rounded-full transition-colors whitespace-nowrap shrink-0"
-					>
-						{#if collection.icon}
-							<collection.icon class="w-5 h-5" stroke-width="2"></collection.icon>
-						{/if}
-						<span class="text-sm lg:text-base font-medium">{collection.name}</span>
-					</a>
-				{/each}
-			</div>
+	<div class="px-4 sm:px-6 lg:px-8">
+		<div class="flex place-content-center gap-1 overflow-x-auto scrollbar-hide py-1">
+			{#each collections as collection}
+				<a
+					href={collection.href}
+					class="flex items-center gap-1.5 px-3 lg:px-4 py-2 text-gray-700 border border-transparent hover:text-gray-900 hover:bg-gray-50 hover:border-gray-100 rounded-full transition-colors whitespace-nowrap shrink-0"
+				>
+					{#if collection.icon}
+						<collection.icon class="w-5 h-5" stroke-width="2"></collection.icon>
+					{/if}
+					<span class="text-sm lg:text-base font-medium">{collection.name}</span>
+				</a>
+			{/each}
 		</div>
 	</div>
 

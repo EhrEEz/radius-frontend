@@ -69,11 +69,10 @@
 				loop: true
 			});
 
-			// @ts-expect-error
 			swiperEl.initialize();
 
 			swiperEl.addEventListener('swiperslidechange', () => {
-				// @ts-expect-error
+				// @ts-expect-error swiperEl May not be present
 				activeIndex = swiperEl.swiper.activeIndex;
 			});
 		}
@@ -134,6 +133,7 @@
 
 			<!-- Custom Pagination Dots -->
 			<div class="absolute bottom-3 left-1/2 z-20 -translate-x-1/2 flex gap-1.5">
+				<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
 				{#each product.images as _, i}
 					<span
 						class="block h-1.5 w-1.5 rounded-full bg-white/50 transition-all"
