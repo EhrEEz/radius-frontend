@@ -4,13 +4,12 @@
 	import { ChevronLeft, ChevronRight, Heart } from '@lucide/svelte';
 	import { register } from 'swiper/element/bundle';
 	import { onMount } from 'svelte';
+
 	interface Props {
 		product: ProductCardType;
 		isOnSale?: boolean;
 		discountPercentage?: number;
 		href?: string;
-
-		// New props for interactions
 		isFavorite?: boolean;
 		ontogglefavorite?: () => void;
 	}
@@ -40,12 +39,6 @@
 				: 0)
 	);
 
-	let visualVariant = $derived(
-		product.variantOptions?.find((opt) =>
-			opt.values.some((val) => val.hexColor || val.thumbnailUrl)
-		)
-	);
-
 	function formatPrice(amount: number, currency: string) {
 		return new Intl.NumberFormat('en-US', {
 			style: 'currency',
@@ -53,37 +46,39 @@
 		}).format(amount);
 	}
 
-	// --- Swiper Initialization Fix ---
+	// --- Variant Selection Logic ---
+	// Pick the first option that has visual swatches (like Color), otherwise pick the first option (like Size)
+	let displayVariant = $derived(
+		product.variantOptions?.find((opt) =>
+			opt.values.some((val) => val.hexColor || val.thumbnailUrl)
+		) || product.variantOptions?.[0]
+	);
+
+	// --- Swiper Initialization ---
 	let swiperEl = $state<SwiperContainer | null>(null);
-	const swiperParams = {
-		lazy: true,
-		navigation: false,
-		pagination: { clickable: false },
-		slidesPerView: 1,
-		loop: true
-	};
+	let activeIndex = $state(0);
+
 	onMount(() => {
 		register();
-		if (swiperEl) {
-			// Assign configuration parameters directly to the element object
-			Object.assign(swiperEl, swiperParams);
+		if (swiperEl && product.images.length > 1) {
+			Object.assign(swiperEl, {
+				lazy: false,
+				navigation: false,
+				pagination: false,
+				slidesPerView: 1,
+				loop: true
+			});
 
-			// Initialize the element manually
+			// @ts-expect-error
 			swiperEl.initialize();
 
-			// Example of listening to Swiper events in Svelte 5
-			const handleSlideChange = () => {
-				console.log('Slide changed to:', swiperEl?.swiper.activeIndex);
-			};
-
-			swiperEl.addEventListener('swiperslidechange', handleSlideChange);
-
-			// Cleanup event listener if component destroys
-			return () => {
-				swiperEl?.removeEventListener('swiperslidechange', handleSlideChange);
-			};
+			swiperEl.addEventListener('swiperslidechange', () => {
+				// @ts-expect-error
+				activeIndex = swiperEl.swiper.activeIndex;
+			});
 		}
 	});
+
 	function slideNext() {
 		swiperEl?.swiper?.slideNext();
 	}
@@ -91,7 +86,6 @@
 	function slidePrev() {
 		swiperEl?.swiper?.slidePrev();
 	}
-	$inspect(product);
 </script>
 
 <a
@@ -101,7 +95,7 @@
 	<!-- 1. Media / Image Slider Section -->
 	<div class="product-card__media relative aspect-square overflow-hidden rounded-xl bg-gray-200">
 		{#if product.images.length > 1}
-			<swiper-container bind:this={swiperEl} init={false} class="h-full w-full">
+			<swiper-container bind:this={swiperEl} init="false" class="h-full w-full">
 				{#each product.images as image}
 					<swiper-slide class="h-full w-full">
 						<img
@@ -113,7 +107,8 @@
 					</swiper-slide>
 				{/each}
 			</swiper-container>
-			<!-- Custom Navigation Buttons (Round with Lucide Icons) -->
+
+			<!-- Custom Navigation Buttons -->
 			<button
 				type="button"
 				onclick={(e) => {
@@ -122,7 +117,6 @@
 					slidePrev();
 				}}
 				class="absolute left-3 top-1/2 z-20 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-full bg-gray-900/90 text-white opacity-0 transition-opacity hover:bg-gray-900 group-hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-300"
-				aria-label="Previous slide"
 			>
 				<ChevronLeft class="h-4 w-4" stroke-width="2.5" />
 			</button>
@@ -134,10 +128,20 @@
 					slideNext();
 				}}
 				class="absolute right-3 top-1/2 z-20 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-full bg-gray-900/90 text-white opacity-0 transition-opacity hover:bg-gray-900 group-hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-300"
-				aria-label="Next slide"
 			>
 				<ChevronRight class="h-4 w-4" stroke-width="2.5" />
 			</button>
+
+			<!-- Custom Pagination Dots -->
+			<div class="absolute bottom-3 left-1/2 z-20 -translate-x-1/2 flex gap-1.5">
+				{#each product.images as _, i}
+					<span
+						class="block h-1.5 w-1.5 rounded-full bg-white/50 transition-all"
+						class:bg-white={i === activeIndex}
+						class:scale-125={i === activeIndex}
+					></span>
+				{/each}
+			</div>
 		{:else if product.images.length === 1}
 			<img
 				src={product.images[0].url}
@@ -149,22 +153,16 @@
 			<div class="flex h-full w-full items-center justify-center text-gray-400">No Image</div>
 		{/if}
 
-		<!-- Badges (Sale / Discount) - NO SHADOWS -->
-		{#if hasDiscount && calculatedDiscount > 0}
+		<!-- Badges -->
+		{#if hasDiscount}
 			<span
 				class="absolute top-3 left-3 z-10 rounded-full bg-orange-500 px-2.5 py-1 text-xs font-bold text-white"
 			>
-				SALE -{calculatedDiscount}%
-			</span>
-		{:else if isOnSale}
-			<span
-				class="absolute top-3 left-3 z-10 rounded-full bg-orange-500 px-2.5 py-1 text-xs font-bold text-white"
-			>
-				SALE
+				{#if calculatedDiscount > 0}SALE -{calculatedDiscount}%{:else}SALE{/if}
 			</span>
 		{/if}
 
-		<!-- Favorites Button (Top Right) - NO SHADOWS -->
+		<!-- Favorites Button -->
 		<button
 			type="button"
 			onclick={(e) => {
@@ -175,60 +173,62 @@
 			class={[
 				'absolute top-3 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900',
 				isFavorite
-					? 'bg-red-500 hover:bg-red-600 text-white hover:text-gray-200'
-					: 'bg-white hover:bg-gray-100 hover:text-gray-800 text-gray-600'
+					? 'bg-red-500 text-white'
+					: 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
 			]}
-			aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
 		>
-			{#if isFavorite}
-				<!-- Filled Heart -->
-				<Heart class="h-4 w-4" fill="currentColor" stroke-width="2" />
-			{:else}
-				<!-- Outline Heart -->
-				<Heart class="h-4 w-4" fill="none" stroke-width="2" />
-			{/if}
+			<Heart class="h-4 w-4" fill={isFavorite ? 'currentColor' : 'none'} stroke-width="2" />
 		</button>
 	</div>
 
 	<!-- 2. Information Section -->
-	<div class="product-card__info mt-4 space-y-2">
+	<div class="product-card__info mt-4 space-y-3">
 		<h3
 			class="font-medium text-black line-clamp-2 group-hover:text-gray-800 transition-colors group-hover:underline"
 		>
 			{product.title}
 		</h3>
 
-		{#if visualVariant}
-			<div class="flex items-center gap-1">
-				{#each visualVariant.values.slice(0, 4) as value}
-					<span
-						class="block h-4 w-4 rounded-full border-[0.25px] border-gray-200"
-						style={value.hexColor
-							? `background-color: ${value.hexColor}`
-							: value.thumbnailUrl
-								? `background-image: url(${value.thumbnailUrl}); background-size: cover;`
-								: ''}
-						title={value.label}
-					></span>
+		<!-- Cleaned Up Variant Display -->
+		{#if displayVariant}
+			<div class="flex flex-wrap items-center gap-1.5">
+				{#each displayVariant.values.slice(0, 5) as value}
+					{#if value.hexColor || value.thumbnailUrl}
+						<!-- Visual Swatch -->
+						<span
+							class="block h-4 w-4 rounded-full border-[0.25px] border-gray-200"
+							style={value.hexColor
+								? `background-color: ${value.hexColor}`
+								: `background-image: url(${value.thumbnailUrl}); background-size: cover;`}
+							title={value.label}
+						></span>
+					{:else}
+						<!-- Text Badge (Cleaner styling) -->
+						<span
+							class="inline-flex items-center justify-center rounded-md border border-gray-200 bg-gray-50 px-2 py-0.5 text-[10px] font-medium text-gray-600"
+						>
+							{value.label}
+						</span>
+					{/if}
 				{/each}
-				{#if visualVariant.values.length > 4}
-					<span class="text-xs text-gray-500 pl-1">+{visualVariant.values.length - 4}</span>
+				{#if displayVariant.values.length > 5}
+					<span class="text-xs text-gray-400">+{displayVariant.values.length - 5}</span>
 				{/if}
 			</div>
 		{/if}
 
 		<div class="flex items-baseline gap-2">
 			{#if hasDiscount && product.price.discountedAmount !== undefined}
-				<span class="text-base font-bold text-red-700">
-					{formatPrice(product.price.discountedAmount, product.price.currency)}
-				</span>
-				<span class="text-sm text-gray-400 line-through">
-					{formatPrice(product.price.amount, product.price.currency)}
-				</span>
+				<span class="text-base font-bold text-red-700"
+					>{formatPrice(product.price.discountedAmount, product.price.currency)}</span
+				>
+				<span class="text-sm text-gray-400 line-through"
+					>{formatPrice(product.price.amount, product.price.currency)}</span
+				>
 			{:else}
-				<span class="text-base font-bold text-gray-900">
-					{formatPrice(product.price.amount, product.price.currency)}
-				</span>
+				<span class="text-base font-bold text-gray-900"
+					>{formatPrice(product.price.amount, product.price.currency)}</span
+				>
 			{/if}
 		</div>
 
@@ -241,34 +241,3 @@
 		{/if}
 	</div>
 </a>
-
-<style>
-	/*
-    Swiper Web Components use Shadow DOM, so we style them using CSS Variables
-    provided by Swiper. This is the cleanest way to theme the web component.
-  */
-	swiper-container {
-		--swiper-pagination-color: var(--color-white, #ffffff);
-		--swiper-navigation-color: var(--color-white, #ffffff);
-		--swiper-navigation-bgcolor: var(--color-gray-900);
-		--swiper-pagination-bullet-inactive-color: var(--color-gray-300, #d1d5db);
-		--swiper-pagination-bullet-inactive-opacity: 1;
-		--swiper-pagination-bullet-height: 2px;
-		--swiper-pagination-bullet-width: 12px;
-		--swiper-pagination-bullet-border-radius: 0;
-		/* Hide navigation arrows by default, show on hover */
-	}
-
-	/* Svelte doesn't natively pierce Shadow DOM for hover states easily via CSS variables,
-     so we use :global for the container hover effect on the navigation arrows */
-	:global(.product-card:hover swiper-container::part(button-prev)),
-	:global(.product-card:hover swiper-container::part(button-next)) {
-		opacity: 1;
-	}
-
-	:global(swiper-container::part(button-prev)),
-	:global(swiper-container::part(button-next)) {
-		opacity: 0;
-		transition: opacity 0.3s ease;
-	}
-</style>
