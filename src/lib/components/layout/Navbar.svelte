@@ -135,9 +135,13 @@
 						<div
 							class="w-8 h-8 lg:w-10 lg:h-10 bg-black rounded-full flex items-center justify-center"
 						>
-							<span class="text-white font-bold text-sm lg:text-base leading-tight">R</span>
+							<span class="text-white font-semibold text-base lg:text-xl leading-tight font-serif"
+								>R</span
+							>
 						</div>
-						<span class="text-xl lg:text-2xl font-bold text-gray-900 hidden sm:block">Radius</span>
+						<span class="text-xl lg:text-2xl font-semibold text-gray-900 hidden sm:block font-serif"
+							>Radius</span
+						>
 					</a>
 
 					<!-- Categories Button (Desktop) -->
