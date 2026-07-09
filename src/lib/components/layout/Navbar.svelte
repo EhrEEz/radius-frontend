@@ -12,7 +12,9 @@
 		House as HomeIcon,
 		Sparkles,
 		Zap,
-		BookOpen
+		BookOpen,
+		Flame,
+		TicketPercent
 	} from '@lucide/svelte';
 
 	// Reactive state using Svelte 5 runes
@@ -63,8 +65,8 @@
 	const collections = [
 		{ name: 'New Arrivals', href: '/collections/new-arrivals' },
 		{ name: 'Best Sellers', href: '/collections/best-sellers' },
-		{ name: 'Sale', href: '/collections/sale' },
-		{ name: 'Trending', href: '/collections/trending' },
+		{ name: 'Sale', href: '/collections/sale', icon: TicketPercent },
+		{ name: 'Trending', href: '/collections/trending', icon: Flame },
 		{ name: 'Featured', href: '/collections/featured' },
 		{ name: 'Clearance', href: '/collections/clearance' }
 	];
@@ -110,7 +112,7 @@
 
 <header class="sticky top-0 z-50 bg-white">
 	<div class="relative">
-		<div class="max-w-10/12 mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 			<div class="flex items-center justify-between h-16 lg:h-20">
 				<!-- Left Side: Logo, Categories, Search -->
 				<div class="flex items-center gap-2 lg:gap-4 flex-1">
@@ -315,14 +317,17 @@
 
 	<!-- Second Row: Collections -->
 	<div>
-		<div class="max-w-10/12 mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 			<div class="flex place-content-center gap-1 overflow-x-auto scrollbar-hide py-1">
 				{#each collections as collection}
 					<a
 						href={collection.href}
-						class="flex items-center gap-2 px-3 lg:px-4 py-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-full transition-colors whitespace-nowrap shrink-0"
+						class="flex items-center gap-1.5 px-3 lg:px-4 py-2 text-gray-700 border border-transparent hover:text-gray-900 hover:bg-gray-50 hover:border-gray-100 rounded-full transition-colors whitespace-nowrap shrink-0"
 					>
-						<span class="text-sm lg:text-sm font-medium">{collection.name}</span>
+						{#if collection.icon}
+							<collection.icon class="w-5 h-5" stroke-width="2"></collection.icon>
+						{/if}
+						<span class="text-sm lg:text-base font-medium">{collection.name}</span>
 					</a>
 				{/each}
 			</div>
