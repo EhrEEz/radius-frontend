@@ -1,9 +1,14 @@
 <!-- src/lib/components/pdp/MediaGallery.svelte -->
 <script lang="ts">
 	import type { Image } from '$lib/types/product';
+	import { Heart } from '@lucide/svelte';
 	import Lightbox from './Lightbox.svelte';
 
-	let { images }: { images: Image[] } = $props();
+	let {
+		images,
+		isFavorite = false,
+		toggleFavorite
+	}: { images: Image[]; isFavorite?: boolean; toggleFavorite?: () => void } = $props();
 
 	let activeIndex = $state(0);
 	let isLightboxOpen = $state(false);
@@ -21,7 +26,7 @@
 	}
 </script>
 
-<div class="grid grid-cols-7 gap-2 col-span-6">
+<div class="grid grid-cols-12 gap-2 col-span-8">
 	<!-- Thumbnails -->
 	{#if images.length > 1}
 		<div class="flex flex-col gap-2 col-span-1">
@@ -30,7 +35,7 @@
 					onmouseenter={() => (activeIndex = i)}
 					class="relative aspect-square overflow-hidden rounded-xl border-2 transition-all {i ===
 					activeIndex
-						? 'border-neutral-900'
+						? 'ring-2 ring-neutral-900 ring-offset-1'
 						: 'border-transparent hover:border-neutral-300'}"
 					aria-label="View image {i + 1}"
 				>
@@ -42,7 +47,7 @@
 	<!-- Main Image -->
 	<button
 		onclick={() => openLightbox(activeIndex)}
-		class="relative aspect-square w-full overflow-hidden rounded-lg border bg-neutral-50 cursor-zoom-in group col-span-6"
+		class="relative aspect-square w-full overflow-hidden rounded-xl border bg-neutral-50 cursor-zoom-in group col-start-3 col-span-8"
 		aria-label="View full screen"
 	>
 		{#if images[activeIndex]}
@@ -53,6 +58,24 @@
 			/>
 		{/if}
 	</button>
+	<div class="col-start-11 col-span-2 px-12">
+		<button
+			type="button"
+			onclick={(e) => {
+				e.preventDefault();
+				e.stopPropagation();
+				toggleFavorite?.();
+			}}
+			class={[
+				'flex w-full aspect-square items-center justify-center rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900',
+				isFavorite
+					? 'bg-red-500 text-white'
+					: 'bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-gray-200 hover:border-gray-400'
+			]}
+		>
+			<Heart class="h-6 w-6" fill={isFavorite ? 'currentColor' : 'none'} stroke-width="2" />
+		</button>
+	</div>
 </div>
 
 {#if isLightboxOpen}

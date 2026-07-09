@@ -46,9 +46,6 @@ export const load: PageServerLoad = async ({ params }) => {
 		description: `
 			<p>Crafted for the modern traveler, the <strong>Horizon Leather Weekender</strong> bridges the gap between rugged durability and refined elegance.
 			Made from full-grain Italian leather that develops a rich patina over time, this bag is designed to be your lifelong companion.</p>
-			<h3>Uncompromising Quality</h3>
-			<p>Every stitch is reinforced with waxed linen thread, and the hardware is solid brass, built to withstand the rigors of travel.
-			The interior features a water-resistant cotton twill lining and a dedicated padded sleeve for up to a 15-inch laptop.</p>
 		`,
 
 		specifications: {

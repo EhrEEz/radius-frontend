@@ -94,19 +94,94 @@
 	font-style: italic;
 	font-display: swap;
 }
+/* Latin Basic, as defined by Google Fonts */
 @font-face {
 	font-family: 'Fraunces';
-	src: url('/fonts/FR/Fraunces-Italic.ttf') format('ttf');
-	font-weight: 100-900;
-	font-style: italic;
 	font-display: swap;
+	font-weight: 100 900;
+	src: url('/fonts/FR/Fraunces--latin_basic.woff2') format('woff2');
+	unicode-range:
+		U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074,
+		U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+	font-variation-settings:
+		'SOFT' 50,
+		'WONK' 1;
 }
 
+/* Latin extended, for diacritics in font which are not included in Latin Basic */
 @font-face {
 	font-family: 'Fraunces';
-	src: url('/fonts/FR/Fraunces.ttf') format('ttf');
-	font-weight: 100-900;
 	font-display: swap;
+	font-weight: 100 900;
+	src: url('/fonts/FR/Fraunces--latin_ext.woff2') format('woff2');
+	unicode-range:
+		U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F,
+		U+A720-A7FF;
+	font-variation-settings:
+		'SOFT' 50,
+		'WONK' 1;
+}
+
+/* Vietnamese glyphs not included in Latin Basic */
+@font-face {
+	font-family: 'Fraunces';
+	font-display: swap;
+	font-weight: 100 900;
+	src: url('/fonts/FR/Fraunces--vietnamese.woff2') format('woff2');
+	unicode-range:
+		U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9,
+		U+20AB;
+	font-variation-settings:
+		'SOFT' 50,
+		'WONK' 1;
+}
+
+/* ---------------------------------------------------------------------------- */
+/* ITALICS */
+
+/* Latin Basic, as defined by Google Fonts */
+@font-face {
+	font-family: 'Fraunces';
+	font-display: swap;
+	font-weight: 100 900;
+	font-style: italic;
+	src: url('/fonts/FR/Fraunces-Italic--latin_basic.woff2') format('woff2');
+	unicode-range:
+		U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074,
+		U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+	font-variation-settings:
+		'SOFT' 50,
+		'WONK' 1;
+}
+
+/* Latin extended, for diacritics in font which are not included in Latin Basic */
+@font-face {
+	font-family: 'Fraunces';
+	font-display: swap;
+	font-weight: 100 900;
+	font-style: italic;
+	src: url('/fonts/FR/Fraunces-Italic--latin_ext.woff2') format('woff2');
+	unicode-range:
+		U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F,
+		U+A720-A7FF;
+	font-variation-settings:
+		'SOFT' 50,
+		'WONK' 1;
+}
+
+/* Vietnamese glyphs not included in Latin Basic */
+@font-face {
+	font-family: 'Fraunces';
+	font-display: swap;
+	font-weight: 100 900;
+	font-style: italic;
+	src: url('/fonts/FR/Fraunces-Italic--vietnamese.woff2') format('woff2');
+	unicode-range:
+		U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9,
+		U+20AB;
+	font-variation-settings:
+		'SOFT' 50,
+		'WONK' 1;
 }
 
 @layer base {
@@ -115,7 +190,7 @@
 	}
 
 	body {
-		@apply bg-gray-50 font-sans text-gray-900 antialiased;
+		@apply bg-gray-100 font-sans text-gray-900 antialiased;
 	}
 }
 

@@ -41,8 +41,8 @@
 	}
 </script>
 
-<div class="max-w-7xl mx-auto py-8">
-	<div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+<div class="px-40 py-16">
+	<div class="grid grid-cols-1 lg:grid-cols-12 gap-24">
 		<!-- Left: Media Gallery (Receives filtered images) -->
 		<MediaGallery images={galleryImages} />
 

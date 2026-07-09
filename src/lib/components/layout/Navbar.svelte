@@ -111,10 +111,10 @@
 	});
 </script>
 
-<header class="sticky top-0 z-50 bg-white">
+<header class="sticky top-0 z-50 bg-white border-b border-b-gray-200">
 	<div class="relative">
 		<div class="px-4 sm:px-6 lg:px-8">
-			<div class="flex items-center justify-between h-16 lg:h-20">
+			<div class="flex items-center justify-between pt-2 lg:pt-3 pb-1">
 				<!-- Left Side: Logo, Categories, Search -->
 				<div class="flex items-center gap-2 lg:gap-4 flex-1">
 					<!-- Mobile Menu Button -->
@@ -282,7 +282,7 @@
 						{:else}
 							<a
 								href="/login"
-								class="flex items-center gap-2 px-4 py-2 bg-black text-white hover:bg-gray-800 rounded-full transition-colors font-medium"
+								class="flex items-center gap-2 px-4 py-2 bg-black text-white hover:bg-gray-800 rounded-full transition-colors font-semibold"
 							>
 								<span>Login</span>
 							</a>
@@ -327,9 +327,9 @@
 					class="flex items-center gap-1.5 px-3 lg:px-4 py-2 text-gray-700 border border-transparent hover:text-gray-900 hover:bg-gray-50 hover:border-gray-100 rounded-full transition-colors whitespace-nowrap shrink-0"
 				>
 					{#if collection.icon}
-						<collection.icon class="w-5 h-5" stroke-width="2"></collection.icon>
+						<collection.icon class="w-4.5 h-4.5" stroke-width="2"></collection.icon>
 					{/if}
-					<span class="text-sm lg:text-base font-medium">{collection.name}</span>
+					<span class="text-sm lg:text-[0.9rem] font-semibold">{collection.name}</span>
 				</a>
 			{/each}
 		</div>

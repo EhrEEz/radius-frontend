@@ -3,6 +3,7 @@
 	import { cart } from '$lib/components/cart/cart.svelte';
 	import type { Product, ProductVariant, Price } from '$lib/types/product';
 	import { ShoppingCart } from '@lucide/svelte';
+	import DOMPurify from 'dompurify';
 
 	let {
 		product,
@@ -15,13 +16,14 @@
 		selectedOptionValueIds: Record<string, string>;
 		onOptionSelect: (optionId: string, valueId: string) => void;
 	} = $props();
-
 	// Helper to get the actual selected value objects for labels/attributes
 	let selectedOptionValues = $derived.by(() => {
 		return product.variantOptions
 			.map((opt) => opt.values.find((v) => v.id === selectedOptionValueIds[opt.id]))
 			.filter((v): v is NonNullable<typeof v> => !!v);
 	});
+	// eslint-disable-next-line
+	let cleanDescription = $state<string>('');
 
 	// Price formatting helper
 	function formatCurrency(price: Price): { current: string; original: string | null } {
@@ -85,9 +87,13 @@
 			image: selectedVariant.images?.[0]?.url ?? product.images[0]?.url
 		});
 	}
+
+	$effect(() => {
+		cleanDescription = DOMPurify.sanitize(product.description);
+	});
 </script>
 
-<div class="flex flex-col gap-6 sticky top-24 self-start col-span-6">
+<div class="flex flex-col gap-6 sticky top-24 self-start col-span-4">
 	<!-- Title & Price -->
 	<div>
 		<h1 class="text-3xl font-bold text-neutral-900">{product.title}</h1>
@@ -97,6 +103,10 @@
 				<span class="text-lg text-neutral-500 line-through">{displayPrice.original}</span>
 			{/if}
 		</div>
+	</div>
+	<div class="line-clamp-4 text-neutral-700">
+		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+		{@html cleanDescription}
 	</div>
 
 	<!-- Variant Options (Swatches) -->
@@ -156,7 +166,7 @@
 	<div class="flex flex-col gap-4 pt-6 border-t">
 		<div class="flex items-center gap-4">
 			<span class="text-sm font-medium text-neutral-900">Quantity</span>
-			<div class="flex items-center rounded-md border border-neutral-200">
+			<div class="flex items-center rounded-md border border-neutral-200 bg-white">
 				<button
 					onclick={() => (quantity = Math.max(1, quantity - 1))}
 					class="px-3 py-1.5 text-neutral-600 hover:bg-neutral-50 transition-colors"
@@ -177,17 +187,16 @@
 			<button
 				onclick={handleAddToCart}
 				disabled={!selectedVariant || !isInStock}
-				class="w-full rounded-full bg-neutral-900 px-6 py-3 text-sm font-medium text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-300 flex gap-3.5 items-center justify-center cursor-pointer"
+				class="w-full rounded-full bg-white px-6 py-3 text-sm font-semibold text-neutral-900 transition hover:bg-neutral-50 disabled:cursor-not-allowed disabled:bg-neutral-500 flex gap-3.5 items-center justify-center cursor-pointer border border-gray-200 hover:border-gray-400 hover:text-black"
 			>
-				<ShoppingCart class="w-4 h-4" stroke-width="2" />
+				<ShoppingCart class="w-4 h-4" stroke-width="3" />
 				{!selectedVariant ? 'Select Options' : !isInStock ? 'Out of Stock' : 'Add to Cart'}
 			</button>
 			<button
 				onclick={handleAddToCart}
 				disabled={!selectedVariant || !isInStock}
-				class="w-full rounded-full bg-neutral-900 px-6 py-3 text-sm font-medium text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-300 flex gap-3.5 items-center justify-center cursor-pointer"
+				class="w-full rounded-full bg-neutral-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-300 flex gap-3.5 items-center justify-center cursor-pointer"
 			>
-				<ShoppingCart class="w-4 h-4" stroke-width="2" />
 				{!selectedVariant ? 'Select Options' : !isInStock ? 'Out of Stock' : 'Buy Now'}
 			</button>
 		</div>
