@@ -111,9 +111,9 @@
 	});
 </script>
 
-<header class="sticky top-0 z-50 bg-white border-b border-b-gray-200">
+<header class="sticky top-0 z-50 bg-white border-b border-b-gray-200 content-grid">
 	<div class="relative">
-		<div class="px-4 sm:px-6 lg:px-8">
+		<div>
 			<div class="flex items-center justify-between pt-2 lg:pt-3 pb-1">
 				<!-- Left Side: Logo, Categories, Search -->
 				<div class="flex items-center gap-2 lg:gap-4 flex-1">

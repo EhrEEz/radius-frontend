@@ -111,6 +111,10 @@ export const load: PageServerLoad = async ({ params }) => {
 						alt: 'Cognac Horizon Bag'
 					},
 					{
+						url: 'https://images.unsplash.com/photo-1598532163257-ae3c6b2524b6?w=800&h=800&fit=crop',
+						alt: 'Cognac Horizon Bag Brown'
+					},
+					{
 						url: 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=800&h=800&fit=crop',
 						alt: 'Cognac Horizon Bag interior'
 					}

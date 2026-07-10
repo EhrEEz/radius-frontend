@@ -12,7 +12,7 @@
 </script>
 
 <Navbar />
-<main class="px-4 sm:px-6 lg:px-8">
+<main class="content-grid">
 	{@render children()}
 </main>
 <CartDrawer />

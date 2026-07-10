@@ -1,8 +1,12 @@
 <!-- src/lib/components/pdp/Configurator.svelte -->
 <script lang="ts">
+
+	import { Accordion, AccordionBody, AccordionButton } from '$lib/components/ui/Accordion';
+
+
 	import { cart } from '$lib/components/cart/cart.svelte';
 	import type { Product, ProductVariant, Price } from '$lib/types/product';
-	import { ShoppingCart } from '@lucide/svelte';
+	import { ShoppingCart, Truck, Package, Calendar, MapPin, Edit2, ChevronDown, Tag, Percent } from '@lucide/svelte';
 	import DOMPurify from 'dompurify';
 
 	let {
@@ -16,18 +20,30 @@
 		selectedOptionValueIds: Record<string, string>;
 		onOptionSelect: (optionId: string, valueId: string) => void;
 	} = $props();
+
+	// Accordion state
+	let openAccordionItems = $state<Set<string>>(new Set(['description']));
+
+	function toggleAccordionItem(item: string) {
+		if (openAccordionItems.has(item)) {
+			openAccordionItems.delete(item);
+		} else {
+			openAccordionItems.add(item);
+		}
+	}
+
 	// Helper to get the actual selected value objects for labels/attributes
 	let selectedOptionValues = $derived.by(() => {
 		return product.variantOptions
 			.map((opt) => opt.values.find((v) => v.id === selectedOptionValueIds[opt.id]))
 			.filter((v): v is NonNullable<typeof v> => !!v);
 	});
+
 	// eslint-disable-next-line
 	let cleanDescription = $state<string>('');
 
 	// Price formatting helper
 	function formatCurrency(price: Price): { current: string; original: string | null } {
-		// Note: Assuming amount is standard decimal. If your DB stores cents, divide by 100 here.
 		const amount = price.amount;
 		const discounted = price.discountedAmount;
 		const format = (val: number) => {
@@ -45,13 +61,63 @@
 		return formatCurrency(priceObj);
 	});
 
+	// Calculate discount percentage
+	let discountPercentage = $derived.by(() => {
+		const priceObj = selectedVariant?.price ?? product.price;
+		if (priceObj.discountedAmount && priceObj.discountedAmount < priceObj.amount) {
+			const discount = priceObj.amount - priceObj.discountedAmount;
+			const percentage = Math.round((discount / priceObj.amount) * 100);
+			return percentage;
+		}
+		return null;
+	});
+
+	// Sale end date (example - you might get this from product data)
+	let saleEndDate = $derived(product.saleEndDate ? new Date(product.saleEndDate) : null);
+
 	let isInStock = $derived(selectedVariant ? selectedVariant.stock > 0 : false);
 	let quantity = $state(1);
 
+	// Shipping info (you might get this from your backend)
+	let shippingInfo = $derived({
+		estimatedDelivery: 'Jul 21-31',
+		returnWindow: 30,
+		shippingCost: 13.98,
+		shipsFrom: 'United States',
+		deliverTo: 'Nepal'
+	});
+
+	// Highlights (you might get this from product metadata)
+	let highlights = $derived.by(() => {
+		const items: Record<string, string> = {};
+
+		// Add brand if available
+		if (product.brand) {
+			items['Brand'] = product.brand;
+		}
+
+		// Add SKU
+		if (selectedVariant?.sku || product.sku) {
+			items['SKU'] = selectedVariant?.sku || product.sku || '';
+		}
+
+		// Add category
+		if (product.category) {
+			items['Category'] = product.category;
+		}
+
+		// Add any custom highlights from product metadata
+		if (product.highlights) {
+			Object.entries(product.highlights).forEach(([key, value]) => {
+				items[key] = String(value);
+			});
+		}
+
+		return items;
+	});
+
 	/**
-	 * Smart Availability Logic:
-	 * Checks if selecting a specific value still results in a valid, in-stock variant,
-	 * given the user's CURRENT selections for all OTHER options.
+	 * Smart Availability Logic
 	 */
 	function isOptionValueAvailable(optionId: string, valueId: string): boolean {
 		const hypotheticalSelection = { ...selectedOptionValueIds, [optionId]: valueId };
@@ -65,7 +131,6 @@
 	function handleAddToCart() {
 		if (!selectedVariant || !isInStock) return;
 
-		// Map structured attributes for the cart (e.g., { "Color": "Red", "Size": "M" })
 		const attributes: Record<string, string> = {};
 		selectedOptionValues.forEach((val) => {
 			const option = product.variantOptions.find((o) => o.values.some((v) => v.id === val.id));
@@ -93,20 +158,44 @@
 	});
 </script>
 
-<div class="flex flex-col gap-6 sticky top-24 self-start col-span-4">
+<div class="flex flex-col gap-6 sticky top-24 self-start col-span-5 lg:ps-16">
 	<!-- Title & Price -->
 	<div>
+		{#if discountPercentage || saleEndDate}
+			<div class="flex items-center gap-2 text-sm mb-2">
+				{#if discountPercentage}
+					<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-orange-100 text-purple-950 font-medium">
+						<Tag class="w-4 h-4" />
+						Sale
+					</span>
+				{/if}
+				{#if saleEndDate}
+					<span class="text-neutral-600">
+						Ends {saleEndDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+					</span>
+				{/if}
+			</div>
+		{/if}
 		<h1 class="text-3xl font-bold text-neutral-900">{product.title}</h1>
-		<div class="mt-2 flex items-baseline gap-2">
-			<span class="text-2xl font-semibold text-neutral-900">{displayPrice.current}</span>
-			{#if displayPrice.original}
-				<span class="text-lg text-neutral-500 line-through">{displayPrice.original}</span>
-			{/if}
+
+		<!-- Enhanced Price Section with Sale Info -->
+		<div class="mt-2 flex flex-col gap-2">
+			<div class="flex items-baseline gap-3">
+				<span class="text-3xl font-bold text-neutral-900">{displayPrice.current}</span>
+				{#if displayPrice.original}
+					<span class="text-xl text-neutral-500 line-through">{displayPrice.original}</span>
+					{#if discountPercentage}
+						<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-100 text-red-700 text-sm font-semibold">
+							<Percent class="w-4 h-4" />
+							Save {discountPercentage}%
+						</span>
+					{/if}
+				{/if}
+			</div>
+
+			<!-- Sale Badge/Info -->
+
 		</div>
-	</div>
-	<div class="line-clamp-4 text-neutral-700">
-		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-		{@html cleanDescription}
 	</div>
 
 	<!-- Variant Options (Swatches) -->
@@ -134,7 +223,6 @@
 							aria-label={`Select ${option.name}: ${value.label}`}
 							title={value.label}
 						>
-							<!-- /* Render based on available data: Color Hex -> Thumbnail -> Text */ -->
 							{#if value.hexColor}
 								<div class="w-8 h-8" style="background-color: {value.hexColor}"></div>
 							{:else if value.thumbnailUrl}
@@ -149,7 +237,6 @@
 								</span>
 							{/if}
 
-							<!-- /* Strike-through for out-of-stock options */ -->
 							{#if !isAvailable}
 								<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
 									<div class="w-[150%] h-px bg-neutral-500 rotate-45"></div>
@@ -201,4 +288,103 @@
 			</button>
 		</div>
 	</div>
+
+	<!-- Accordion Section -->
+	<div class="flex flex-col gap-6 sticky top-24 self-start">
+		<!-- ... [Keep Title, Price, Variant Options, Quantity & Add to Cart sections exactly as they were] ... -->
+
+		<!-- Accordion Section -->
+		<div class="flex flex-col gap-3 pt-6 border-t">
+
+			<!-- Description Accordion (Open by default) -->
+			<Accordion initiallyOpen={true}>
+				<AccordionButton>Description</AccordionButton>
+				<AccordionBody>
+					<div class="prose prose-sm max-w-none text-neutral-700">
+						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+						{@html cleanDescription}
+					</div>
+				</AccordionBody>
+			</Accordion>
+
+			<!-- Highlights Accordion -->
+			{#if Object.keys(highlights).length > 0}
+				<Accordion>
+					<AccordionButton>Highlights</AccordionButton>
+					<AccordionBody>
+						<dl class="space-y-2">
+							{#each Object.entries(highlights) as [key, value]}
+								<div class="flex justify-between py-1.5 border-b border-neutral-200 last:border-0">
+									<dt class="text-sm text-neutral-600">{key}</dt>
+									<dd class="text-sm font-medium text-neutral-900">{value}</dd>
+								</div>
+							{/each}
+						</dl>
+					</AccordionBody>
+				</Accordion>
+			{/if}
+
+			<!-- Shipping & Returns Accordion -->
+			<Accordion>
+				<AccordionButton>Shipping and return policies</AccordionButton>
+				<AccordionBody>
+					<div class="space-y-3">
+						<!-- Delivery Estimate -->
+						<div class="flex items-start gap-3">
+							<Calendar class="w-5 h-5 text-neutral-700 flex-shrink-0 mt-0.5" />
+							<div>
+								<p class="text-sm text-neutral-900">
+									<span class="font-medium">Order today to get by</span>{' '}
+									<span class="border-b border-dotted border-neutral-400">{shippingInfo.estimatedDelivery}</span>
+								</p>
+							</div>
+						</div>
+
+						<!-- Returns -->
+						<div class="flex items-start gap-3">
+							<Package class="w-5 h-5 text-neutral-700 flex-shrink-0 mt-0.5" />
+							<div>
+								<p class="text-sm text-neutral-900">
+									<span class="border-b border-dotted border-neutral-400">Returns & exchanges accepted within {shippingInfo.returnWindow} days</span>
+								</p>
+							</div>
+						</div>
+
+						<!-- Shipping Cost -->
+						<div class="flex items-start gap-3">
+							<Truck class="w-5 h-5 text-neutral-700 flex-shrink-0 mt-0.5" />
+							<div>
+								<p class="text-sm text-neutral-900">
+									<span class="font-medium">Cost to ship:</span>{' '}
+									<span class="border-b border-dotted border-neutral-400">USD {shippingInfo.shippingCost.toFixed(2)}</span>
+								</p>
+							</div>
+						</div>
+
+						<!-- Ships From -->
+						<div class="flex items-start gap-3">
+							<MapPin class="w-5 h-5 text-neutral-700 flex-shrink-0 mt-0.5" />
+							<div>
+								<p class="text-sm text-neutral-900">
+									<span class="font-medium">Ships from:</span>{' '}
+									<span class="border-b border-dotted border-neutral-400">{shippingInfo.shipsFrom}</span>
+								</p>
+							</div>
+						</div>
+
+						<!-- Deliver To (with edit) -->
+						<div class="flex items-start gap-3 pt-2">
+							<div class="flex items-center gap-2">
+								<span class="text-sm text-neutral-900">Deliver to {shippingInfo.deliverTo}</span>
+								<button class="p-1 hover:bg-neutral-200 rounded transition-colors" aria-label="Edit delivery location">
+									<Edit2 class="w-3.5 h-3.5 text-neutral-600" />
+								</button>
+							</div>
+						</div>
+					</div>
+				</AccordionBody>
+			</Accordion>
+
+		</div>
+</div>
 </div>

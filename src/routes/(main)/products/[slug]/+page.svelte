@@ -28,7 +28,7 @@
 		return product.variants.find((v) => selectedIds.every((id) => v.optionValueIds.includes(id)));
 	});
 
-	// Determine which images to show: Variant-specific images > Base product images
+	// Determine which images to show in the main gallery: Variant-specific images > Base product images
 	let galleryImages = $derived.by(() => {
 		if (selectedVariant?.images && selectedVariant.images.length > 0) {
 			return selectedVariant.images;
@@ -36,15 +36,48 @@
 		return product.images;
 	});
 
+	// Combine base images and ALL variant images for the lightbox, avoiding duplicates by URL
+	let allImages = $derived.by(() => {
+			// We use 'any[]' here because we are dynamically adding a 'variantName' property
+			const combined: any[] = [];
+			const seenUrls = new Set<string>();
+
+			// 1. Add base product images (Categorized as "General" or "Base")
+			product.images.forEach((img) => {
+				if (!seenUrls.has(img.url)) {
+					combined.push({ ...img, variantName: 'General' });
+					seenUrls.add(img.url);
+				}
+			});
+
+			// 2. Add variant images
+			product.variants.forEach((variant) => {
+				// ⚠️ UPDATE THIS: Use the actual property that identifies your variant
+				// (e.g., variant.name, variant.color, variant.sku, etc.)
+				const variantLabel = variant.name || `Variant ${variant.id}`;
+
+				if (variant.images) {
+					variant.images.forEach((img) => {
+						if (!seenUrls.has(img.url)) {
+							combined.push({ ...img, variantName: variantLabel });
+							seenUrls.add(img.url);
+						}
+					});
+				}
+			});
+
+			return combined;
+		});
+
 	function handleOptionSelect(optionId: string, valueId: string) {
 		selectedOptionValueIds[optionId] = valueId;
 	}
 </script>
 
-<div class="px-40 py-16">
-	<div class="grid grid-cols-1 lg:grid-cols-12 gap-24">
-		<!-- Left: Media Gallery (Receives filtered images) -->
-		<MediaGallery images={galleryImages} />
+<div class="py-16">
+	<div class="grid grid-cols-1 lg:grid-cols-12 gap-2 lg:gap-8">
+		<!-- Left: Media Gallery (Receives filtered images and all images for lightbox) -->
+		<MediaGallery images={galleryImages} {allImages} />
 
 		<!-- Right: Configurator (Receives state and emits selection events) -->
 		<Configurator
