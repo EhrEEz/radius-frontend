@@ -1,12 +1,9 @@
 <!-- src/lib/components/pdp/Configurator.svelte -->
 <script lang="ts">
-
 	import { Accordion, AccordionBody, AccordionButton } from '$lib/components/ui/Accordion';
-
-
 	import { cart } from '$lib/components/cart/cart.svelte';
 	import type { Product, ProductVariant, Price } from '$lib/types/product';
-	import { ShoppingCart, Truck, Package, Calendar, MapPin, Edit2, ChevronDown, Tag, Percent } from '@lucide/svelte';
+	import { ShoppingCart, Truck, Package, Calendar, MapPin, Tag, Percent, Pen } from '@lucide/svelte';
 	import DOMPurify from 'dompurify';
 
 	let {
@@ -20,17 +17,6 @@
 		selectedOptionValueIds: Record<string, string>;
 		onOptionSelect: (optionId: string, valueId: string) => void;
 	} = $props();
-
-	// Accordion state
-	let openAccordionItems = $state<Set<string>>(new Set(['description']));
-
-	function toggleAccordionItem(item: string) {
-		if (openAccordionItems.has(item)) {
-			openAccordionItems.delete(item);
-		} else {
-			openAccordionItems.add(item);
-		}
-	}
 
 	// Helper to get the actual selected value objects for labels/attributes
 	let selectedOptionValues = $derived.by(() => {
@@ -72,13 +58,13 @@
 		return null;
 	});
 
-	// Sale end date (example - you might get this from product data)
+	// Sale end date
 	let saleEndDate = $derived(product.saleEndDate ? new Date(product.saleEndDate) : null);
 
 	let isInStock = $derived(selectedVariant ? selectedVariant.stock > 0 : false);
 	let quantity = $state(1);
 
-	// Shipping info (you might get this from your backend)
+	// Shipping info
 	let shippingInfo = $derived({
 		estimatedDelivery: 'Jul 21-31',
 		returnWindow: 30,
@@ -87,26 +73,14 @@
 		deliverTo: 'Nepal'
 	});
 
-	// Highlights (you might get this from product metadata)
+	// Highlights
 	let highlights = $derived.by(() => {
 		const items: Record<string, string> = {};
 
-		// Add brand if available
-		if (product.brand) {
-			items['Brand'] = product.brand;
-		}
+		if (product.brand) items['Brand'] = product.brand;
+		if (selectedVariant?.sku || product.sku) items['SKU'] = selectedVariant?.sku || product.sku || '';
+		if (product.category) items['Category'] = product.category;
 
-		// Add SKU
-		if (selectedVariant?.sku || product.sku) {
-			items['SKU'] = selectedVariant?.sku || product.sku || '';
-		}
-
-		// Add category
-		if (product.category) {
-			items['Category'] = product.category;
-		}
-
-		// Add any custom highlights from product metadata
 		if (product.highlights) {
 			Object.entries(product.highlights).forEach(([key, value]) => {
 				items[key] = String(value);
@@ -116,9 +90,6 @@
 		return items;
 	});
 
-	/**
-	 * Smart Availability Logic
-	 */
 	function isOptionValueAvailable(optionId: string, valueId: string): boolean {
 		const hypotheticalSelection = { ...selectedOptionValueIds, [optionId]: valueId };
 		const selectedIds = Object.values(hypotheticalSelection);
@@ -158,7 +129,7 @@
 	});
 </script>
 
-<div class="flex flex-col gap-6 sticky top-24 self-start col-span-5 lg:ps-16">
+<div class="flex flex-col gap-6 sticky top-24">
 	<!-- Title & Price -->
 	<div>
 		{#if discountPercentage || saleEndDate}
@@ -290,15 +261,15 @@
 	</div>
 
 	<!-- Accordion Section -->
-	<div class="flex flex-col gap-6 sticky top-24 self-start">
+	<div class="flex flex-col gap-6 sticky top-24 self-start items-stretch w-full">
 		<!-- ... [Keep Title, Price, Variant Options, Quantity & Add to Cart sections exactly as they were] ... -->
 
 		<!-- Accordion Section -->
-		<div class="flex flex-col gap-3 pt-6 border-t">
+		<div class="flex flex-col gap-3 pt-6 border-t ">
 
 			<!-- Description Accordion (Open by default) -->
 			<Accordion initiallyOpen={true}>
-				<AccordionButton>Description</AccordionButton>
+				<AccordionButton>Item Description</AccordionButton>
 				<AccordionBody>
 					<div class="prose prose-sm max-w-none text-neutral-700">
 						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
@@ -309,7 +280,7 @@
 
 			<!-- Highlights Accordion -->
 			{#if Object.keys(highlights).length > 0}
-				<Accordion>
+				<Accordion initiallyOpen={true}>
 					<AccordionButton>Highlights</AccordionButton>
 					<AccordionBody>
 						<dl class="space-y-2">
@@ -325,16 +296,16 @@
 			{/if}
 
 			<!-- Shipping & Returns Accordion -->
-			<Accordion>
+			<Accordion initiallyOpen={true}>
 				<AccordionButton>Shipping and return policies</AccordionButton>
 				<AccordionBody>
 					<div class="space-y-3">
 						<!-- Delivery Estimate -->
 						<div class="flex items-start gap-3">
-							<Calendar class="w-5 h-5 text-neutral-700 flex-shrink-0 mt-0.5" />
+							<Calendar class="w-5 h-5 text-neutral-700 shrink-0 mt-0.5" />
 							<div>
 								<p class="text-sm text-neutral-900">
-									<span class="font-medium">Order today to get by</span>{' '}
+									<span class="font-medium">Order today to get by</span>
 									<span class="border-b border-dotted border-neutral-400">{shippingInfo.estimatedDelivery}</span>
 								</p>
 							</div>
@@ -342,7 +313,7 @@
 
 						<!-- Returns -->
 						<div class="flex items-start gap-3">
-							<Package class="w-5 h-5 text-neutral-700 flex-shrink-0 mt-0.5" />
+							<Package class="w-5 h-5 text-neutral-700 shrink-0 mt-0.5" />
 							<div>
 								<p class="text-sm text-neutral-900">
 									<span class="border-b border-dotted border-neutral-400">Returns & exchanges accepted within {shippingInfo.returnWindow} days</span>
@@ -352,21 +323,21 @@
 
 						<!-- Shipping Cost -->
 						<div class="flex items-start gap-3">
-							<Truck class="w-5 h-5 text-neutral-700 flex-shrink-0 mt-0.5" />
+							<Truck class="w-5 h-5 text-neutral-700 shrink-0 mt-0.5" />
 							<div>
 								<p class="text-sm text-neutral-900">
-									<span class="font-medium">Cost to ship:</span>{' '}
-									<span class="border-b border-dotted border-neutral-400">USD {shippingInfo.shippingCost.toFixed(2)}</span>
+									<span class="font-medium">Cost to ship:</span>
+									<span class="border-b border-dotted border-neutral-400">Rs. {shippingInfo.shippingCost.toFixed(2)}</span>
 								</p>
 							</div>
 						</div>
 
 						<!-- Ships From -->
 						<div class="flex items-start gap-3">
-							<MapPin class="w-5 h-5 text-neutral-700 flex-shrink-0 mt-0.5" />
+							<MapPin class="w-5 h-5 text-neutral-700 shrink-0 mt-0.5" />
 							<div>
 								<p class="text-sm text-neutral-900">
-									<span class="font-medium">Ships from:</span>{' '}
+									<span class="font-medium">Ships from:</span>
 									<span class="border-b border-dotted border-neutral-400">{shippingInfo.shipsFrom}</span>
 								</p>
 							</div>
@@ -377,7 +348,7 @@
 							<div class="flex items-center gap-2">
 								<span class="text-sm text-neutral-900">Deliver to {shippingInfo.deliverTo}</span>
 								<button class="p-1 hover:bg-neutral-200 rounded transition-colors" aria-label="Edit delivery location">
-									<Edit2 class="w-3.5 h-3.5 text-neutral-600" />
+									<Pen class="w-3.5 h-3.5 text-neutral-600" />
 								</button>
 							</div>
 						</div>

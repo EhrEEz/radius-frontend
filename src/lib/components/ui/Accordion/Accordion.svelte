@@ -18,12 +18,15 @@
   } = $props();
 
   const acState = new AccordionState();
-  acState.isOpen = initiallyOpen;
+
+  $effect(() => {
+ 	 acState.isOpen = initiallyOpen;
+  })
 
   // Provide the state to all child components
   setContext('accordion', acState);
 </script>
 
-<div class="border border-neutral-200 rounded-lg overflow-hidden">
+<div class={["overflow-hidden", acState.isOpen ? "rounded-2xl bg-white" : ""]}>
   {@render children?.()}
 </div>

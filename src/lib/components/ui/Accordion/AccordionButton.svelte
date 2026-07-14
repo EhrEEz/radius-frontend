@@ -9,8 +9,10 @@
 </script>
 
 <button
-  onclick={ctx.toggle}
-  class="w-full flex items-center justify-between px-4 py-3 bg-white hover:bg-neutral-50 transition-colors text-left"
+  onclick={() => {
+  ctx.toggle();
+  }}
+  class={["w-full flex items-center justify-between px-6 py-4  hover:bg-neutral-50 transition-colors text-left ", ctx.isOpen ? "rounded-none": "bg-white rounded-full"]}
 >
   <span class="font-semibold text-neutral-900">
     {@render children?.()}

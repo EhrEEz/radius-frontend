@@ -51,7 +51,7 @@
 	}
 </script>
 
-<div class="grid grid-cols-11 gap-8 col-span-7">
+<div class="grid grid-cols-11 gap-8">
 	<!-- Thumbnails -->
 	{#if images.length > 1}
 		<div class="flex flex-col gap-2">
