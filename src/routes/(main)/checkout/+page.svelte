@@ -46,7 +46,7 @@
 	});
 
 	// --- Derived State for Totals & Denominations ---
-	let subtotal = $derived(mockCart.reduce((sum, item) => sum + item.price * item.qty, 0));
+	let subtotal = $derived(mockCart.reduce((sum, item) => sum + item.price * item.quantity, 0));
 	let discountAmount = $derived(coupon.applied ? subtotal * (coupon.discountPercent / 100) : 0);
 	let shippingFee = $derived(subtotal > 0 ? 50 : 0);
 	let tax = $derived((subtotal - discountAmount) * 0.12); // Mock 12% VAT
@@ -116,6 +116,7 @@
 		/>
 	{:else if currentStep === 2}
 		<CheckoutShippingPayment
+			cart={mockCart}
 			{shipping}
 			{payment}
 			{subtotal} {shippingFee} {tax} {discountAmount} {total}

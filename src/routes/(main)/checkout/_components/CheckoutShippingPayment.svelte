@@ -1,10 +1,12 @@
 <!-- src/routes/checkout/_components/CheckoutShippingPayment.svelte -->
 <script lang="ts">
 	let {
-		shipping, payment,
+		shipping, payment,cart,
 		subtotal, shippingFee, tax, discountAmount, total,
 		onSubmit, prevStep
 	} = $props<{
+		// eslint-disable-next-line
+		cart: any[];
 		// eslint-disable-next-line
 		shipping: any;
 		// eslint-disable-next-line
@@ -39,7 +41,66 @@
 
 <form onsubmit={handleSubmit} class="grid grid-cols-1 lg:grid-cols-3 gap-16">
 	<!-- Left Column: Shipping Information -->
-	<div class="left-side lg:col-span-2">
+	<div class="lg:col-span-2">
+		<div class="bg-white rounded-lg border border-gray-200 divide-y">
+			{#each cart as item}
+							<li class="flex gap-4 px-6 py-4">
+								<a
+									href="/products/{item.slug}"
+									class="h-20 w-20 shrink-0 overflow-hidden rounded-md border bg-neutral-50"
+								>
+									{#if item.image}
+										<img src={item.image} alt={item.name} class="h-full w-full object-cover" />
+									{:else}
+										<div
+											class="flex h-full w-full items-center justify-center text-xs text-neutral-400"
+										>
+											No image
+										</div>
+									{/if}
+								</a>
+
+								<div class="flex flex-1 flex-col">
+									<div class="flex justify-between gap-2">
+										<div>
+											<a
+												href="/products/{item.slug}"
+												class="text-sm font-medium text-neutral-900 hover:underline"
+											>
+												{item.name}
+											</a>
+											{#if item.variantLabel}
+												<p class="mt-0.5 text-xs text-neutral-500">{item.variantLabel}</p>
+											{/if}
+										</div>
+										<p class="text-sm font-medium text-neutral-900">
+											₱{(item.price * item.quantity).toFixed(2)}
+										</p>
+									</div>
+
+									<div class="mt-auto flex items-center justify-between pt-2">
+										<!-- Quantity Display (Read-only for checkout) -->
+										<div class="flex items-center rounded-md border bg-neutral-50 px-3 py-1">
+											<span class="text-sm text-neutral-600">Qty:</span>
+											<span class="ml-1 text-sm font-medium tabular-nums text-neutral-900">
+												{item.quantity}
+											</span>
+										</div>
+
+										<div class="flex items-center gap-3 text-xs">
+											<a
+												href="/cart"
+												class="font-medium text-neutral-700 hover:text-neutral-900 hover:underline"
+											>
+												Edit in Cart
+											</a>
+										</div>
+									</div>
+								</div>
+							</li>
+						{/each}
+		</div>
+	<div class="shipping-information">
 		<!-- Order Summary & Submit -->
 		<h2 class="text-lg font-semibold text-gray-900 mb-4 font-serif">Shipping Information</h2>
 		<div class="grid gap-4">
@@ -143,6 +204,7 @@
 				</div>
 		</div>
 			</div>
+	</div>
 
 
 
