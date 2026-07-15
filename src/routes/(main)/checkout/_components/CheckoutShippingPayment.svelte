@@ -1,5 +1,14 @@
 <!-- src/routes/checkout/_components/CheckoutShippingPayment.svelte -->
 <script lang="ts">
+	type SavedAddress = {
+		id: string;
+		fullName: string;
+		phone: string;
+		address: string;
+		city: string;
+		notes: string;
+	};
+
 	let {
 		shipping, payment,cart,
 		subtotal, shippingFee, tax, discountAmount, total,
@@ -15,6 +24,84 @@
 		onSubmit: () => void;
 		prevStep: () => void;
 	}>();
+
+	// State for saved addresses and selection
+	let savedAddresses = $state<SavedAddress[]>([]);
+	let selectedAddressId = $state<string>('');
+	let useSavedAddress = $state<boolean>(false);
+	let showSaveOption = $state<boolean>(true);
+	let saveNewAddress = $state<boolean>(false);
+
+	// Load saved addresses on mount
+	$effect(() => {
+		if (typeof window !== 'undefined') {
+			const stored = localStorage.getItem('savedAddresses');
+			if (stored) {
+				savedAddresses = JSON.parse(stored);
+			}
+		}
+	});
+
+	// When selecting a saved address, populate the shipping form
+	function selectSavedAddress(address: SavedAddress) {
+		shipping.fullName = address.fullName;
+		shipping.phone = address.phone;
+		shipping.address = address.address;
+		shipping.city = address.city;
+		shipping.notes = address.notes;
+		selectedAddressId = address.id;
+		useSavedAddress = true;
+	}
+
+	// Clear selection and reset form
+	function useNewAddress() {
+		useSavedAddress = false;
+		selectedAddressId = '';
+		shipping.fullName = '';
+		shipping.phone = '';
+		shipping.address = '';
+		shipping.city = '';
+		shipping.notes = '';
+	}
+
+	// Save current address to saved addresses
+	function saveCurrentAddress() {
+		if (!shipping.fullName || !shipping.phone || !shipping.address) {
+			alert('Please fill in all required fields before saving.');
+			return;
+		}
+
+		const newAddress: SavedAddress = {
+			id: Date.now().toString(),
+			fullName: shipping.fullName,
+			phone: shipping.phone,
+			address: shipping.address,
+			city: shipping.city,
+			notes: shipping.notes
+		};
+
+		savedAddresses.push(newAddress);
+		
+		if (typeof window !== 'undefined') {
+			localStorage.setItem('savedAddresses', JSON.stringify(savedAddresses));
+		}
+
+		showSaveOption = false;
+		saveNewAddress = false;
+	}
+
+	// Delete a saved address
+	function deleteAddress(id: string) {
+		if (confirm('Are you sure you want to delete this saved address?')) {
+			savedAddresses = savedAddresses.filter(addr => addr.id !== id);
+			if (typeof window !== 'undefined') {
+				localStorage.setItem('savedAddresses', JSON.stringify(savedAddresses));
+			}
+			if (selectedAddressId === id) {
+				useNewAddress();
+			}
+		}
+	}
 
 	function handleFileChange(e: Event) {
 		const target = e.target as HTMLInputElement;
@@ -35,6 +122,12 @@
 			alert('Please upload a screenshot of your QR payment.');
 			return;
 		}
+		
+		// Save address if user opted to save
+		if (saveNewAddress && showSaveOption) {
+			saveCurrentAddress();
+		}
+		
 		onSubmit();
 	}
 </script>
@@ -101,6 +194,51 @@
 						{/each}
 		</div>
 	<div class="shipping-information">
+		<!-- Saved Addresses Section -->
+		{#if savedAddresses.length > 0}
+			<div class="mt-6 mb-6">
+				<h2 class="text-lg font-semibold text-gray-900 mb-4 font-serif">Saved Addresses</h2>
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+					{#each savedAddresses as address}
+						<div 
+							class="relative p-4 border rounded-lg cursor-pointer transition-all {selectedAddressId === address.id ? 'border-primary bg-primary-50' : 'border-gray-200 hover:border-gray-300'}"
+							onclick={() => selectSavedAddress(address)}
+						>
+							<div class="flex justify-between items-start">
+								<div class="flex-1">
+									<p class="font-medium text-gray-900">{address.fullName}</p>
+									<p class="text-sm text-gray-600 mt-1">{address.address}</p>
+									{#if address.city}
+										<p class="text-sm text-gray-600">{address.city}</p>
+									{/if}
+									<p class="text-sm text-gray-600">{address.phone}</p>
+								</div>
+								<button 
+									type="button"
+									onclick={(e) => { e.stopPropagation(); deleteAddress(address.id); }}
+									class="text-gray-400 hover:text-red-500 p-1"
+									title="Delete address"
+								>
+									<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+										<path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+									</svg>
+								</button>
+							</div>
+						</div>
+					{/each}
+				</div>
+				<div class="mt-4">
+					<button 
+						type="button"
+						onclick={useNewAddress}
+						class="text-sm font-medium text-primary hover:text-primary-600"
+					>
+						+ Use a different address
+					</button>
+				</div>
+			</div>
+		{/if}
+
 		<!-- Order Summary & Submit -->
 		<h2 class="text-lg font-semibold text-gray-900 mb-4 font-serif">Shipping Information</h2>
 		<div class="grid gap-4">
@@ -202,20 +340,25 @@
 						Order Notes (Optional)
 					</label>
 				</div>
-		</div>
-			</div>
-	</div>
+                                </div>
+
+                                <!-- Save Address Option -->
+                                {#if showSaveOption}
+                                        <div class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                                <label class="flex items-center cursor-pointer">
+                                                        <input 
+                                                                type="checkbox" 
+                                                                bind:checked={saveNewAddress}
+                                                                class="rounded border-gray-300 text-primary focus:ring-primary" 
+                                                        />
+                                                        <span class="ml-3 text-sm font-medium text-gray-700">Save this address for future orders</span>
+                                                </label>
+                                        </div>
+                                {/if}
+                        </div>
+                </div>
 
 
-
-	<!-- Right Column: Payment & Totals -->
-	<div class="space-y-8">
-		<!-- Payment Options -->
-		<div class="">
-			<h3 class="font-semibold text-gray-900 mb-4 font-serif text-lg">Payment Method</h3>
-			<div class="space-x-3 flex">
-				<label class="flex grow items-center py-4 px-3.5 border rounded-xl cursor-pointer hover:bg-gray-50 transition bg-white {payment.method === 'cod' ? 'border-primary bg-primary-50' : 'border-gray-200'}">
-					<input type="radio" name="paymentMethod" value="cod" bind:group={payment.method} class="appearance-none text-primary border-gray-300 bg-white focus:ring-primary" />
 					<span class={["ml-3 text-sm font-medium", payment.method === 'cod' ? 'text-primary' : 'text-gray-700']}>Cash on Delivery (COD)</span>
 				</label>
 				<label class="flex grow items-center py-4 px-3.5 border rounded-xl cursor-pointer hover:bg-gray-50 transition bg-white {payment.method === 'qr' ? 'border-primary bg-primary-50' : 'border-gray-200'}">
