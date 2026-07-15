@@ -73,7 +73,9 @@ export interface Product extends Omit<ProductCard, 'variantOptions'> {
 	tags: string[];
 	variantOptions: VariantOption[];
 	variants: ProductVariant[];
-	relatedProductIds?: string[];
+	relatedProducts?: ProductCard[];
+	frequentlyBoughtTogether?: ProductCard[];
+	similarKeywords?: string[];
 	seo?: {
 		title?: string;
 		description?: string;

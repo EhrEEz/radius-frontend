@@ -158,6 +158,8 @@ export const load: PageServerLoad = async ({ params }) => {
 		],
 
 		relatedProductIds: ['prod_leather_wallet', 'prod_canvas_dopp_kit', 'prod_luggage_tag_set'],
+		frequentlyBoughtTogether: [
+		],
 
 		seo: {
 			title: 'The Horizon Leather Weekender | Premium Travel Bags',
