@@ -190,11 +190,11 @@
 				</div>
 			</div>
 
-			<div class="mt-6 flex space-x-3">
-				<button type="button" onclick={prevStep} class="px-6 py-3 border border-transparent font-medium rounded-full hover:bg-primary-700 transition text-gray-700 bg-gray-100">
+			<div class="mt-6 space-y-3">
+				<button type="button" onclick={prevStep} class="w-full px-6 py-3 border border-transparent font-medium rounded-full hover:bg-white hover:border-gray-200 transition text-gray-700 bg-gray-50 cursor-pointer">
 					Back to Cart
 				</button>
-				<button type="submit" class="grow px-6 py-3 bg-primary hover:bg-primary-400 text-white font-medium rounded-full hover:bg-primary-700 transition">
+				<button type="submit" class="w-full px-6 py-3 bg-primary hover:bg-primary-400 text-white font-medium rounded-full hover:bg-primary-700 transition cursor-pointer">
 					Place Order
 				</button>
 
