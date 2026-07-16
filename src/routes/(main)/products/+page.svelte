@@ -371,7 +371,7 @@
 
 					<!-- Search -->
 					<div class="mb-6">
-						<label class="mb-2 block text-sm font-medium text-gray-700">Search</label>
+						<div class="mb-2 block text-sm font-medium text-gray-700">Search</div>
 						<div class="relative">
 							<Search class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
 							<input

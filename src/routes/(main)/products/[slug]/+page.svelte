@@ -78,8 +78,6 @@
 		selectedOptionValueIds[optionId] = valueId;
 	}
 
-	let relatedSearches = $derived(data.relatedSearches);
-
 	// ⬇️ Changed from Product[] to ProductCard[]
 	let frequentlyBoughtTogether = $derived<ProductCard[]>(product.frequentlyBoughtTogether || []);
 
