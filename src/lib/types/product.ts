@@ -91,3 +91,9 @@ export interface Product extends Omit<ProductCard, 'variantOptions'> {
 	highlights?: Record<string, string>;
 	saleEndDate?: string | Date;
 }
+
+export interface RelatedSearch {
+	title: string;
+	imageUrl: string;
+	href: string;
+}

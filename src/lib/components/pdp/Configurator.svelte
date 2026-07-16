@@ -3,8 +3,18 @@
 	import { Accordion, AccordionBody, AccordionButton } from '$lib/components/ui/Accordion';
 	import { cart } from '$lib/components/cart/cart.svelte';
 	import type { Product, ProductVariant, Price } from '$lib/types/product';
-	import { ShoppingCart, Truck, Package, Calendar, MapPin, Tag, Percent, Pen } from '@lucide/svelte';
+	import {
+		ShoppingCart,
+		Truck,
+		Package,
+		Calendar,
+		MapPin,
+		Tag,
+		Percent,
+		Pen
+	} from '@lucide/svelte';
 	import DOMPurify from 'dompurify';
+	import { Button } from '../ui/Button';
 
 	let {
 		product,
@@ -78,7 +88,8 @@
 		const items: Record<string, string> = {};
 
 		if (product.brand) items['Brand'] = product.brand;
-		if (selectedVariant?.sku || product.sku) items['SKU'] = selectedVariant?.sku || product.sku || '';
+		if (selectedVariant?.sku || product.sku)
+			items['SKU'] = selectedVariant?.sku || product.sku || '';
 		if (product.category) items['Category'] = product.category;
 
 		if (product.highlights) {
@@ -135,7 +146,9 @@
 		{#if discountPercentage || saleEndDate}
 			<div class="flex items-center gap-2 text-sm mb-2">
 				{#if discountPercentage}
-					<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-orange-100 text-purple-950 font-medium">
+					<span
+						class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-orange-100 text-purple-950 font-medium"
+					>
 						<Tag class="w-4 h-4" />
 						Sale
 					</span>
@@ -156,7 +169,9 @@
 				{#if displayPrice.original}
 					<span class="text-xl text-neutral-500 line-through">{displayPrice.original}</span>
 					{#if discountPercentage}
-						<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-100 text-red-700 text-sm font-semibold">
+						<span
+							class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-100 text-red-700 text-sm font-semibold"
+						>
 							<Percent class="w-4 h-4" />
 							Save {discountPercentage}%
 						</span>
@@ -165,7 +180,6 @@
 			</div>
 
 			<!-- Sale Badge/Info -->
-
 		</div>
 	</div>
 
@@ -242,21 +256,13 @@
 			{/if}
 		</div>
 		<div class="grid grid-cols-2 gap-4">
-			<button
-				onclick={handleAddToCart}
-				disabled={!selectedVariant || !isInStock}
-				class="w-full rounded-full bg-white px-6 py-3 text-sm font-semibold text-neutral-900 transition hover:bg-neutral-50 disabled:cursor-not-allowed disabled:bg-neutral-500 flex gap-3.5 items-center justify-center cursor-pointer border border-gray-200 hover:border-gray-400 hover:text-black"
-			>
-				<ShoppingCart class="w-4 h-4" stroke-width="3" />
+			<Button onclick={handleAddToCart} disabled={!selectedVariant || !isInStock} variant="white">
+				<ShoppingCart class="w-4 h-4" stroke-width="2" />
 				{!selectedVariant ? 'Select Options' : !isInStock ? 'Out of Stock' : 'Add to Cart'}
-			</button>
-			<button
-				onclick={handleAddToCart}
-				disabled={!selectedVariant || !isInStock}
-				class="w-full rounded-full bg-neutral-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-300 flex gap-3.5 items-center justify-center cursor-pointer"
-			>
+			</Button>
+			<Button onclick={handleAddToCart} disabled={!selectedVariant || !isInStock}>
 				{!selectedVariant ? 'Select Options' : !isInStock ? 'Out of Stock' : 'Buy Now'}
-			</button>
+			</Button>
 		</div>
 	</div>
 
@@ -265,8 +271,7 @@
 		<!-- ... [Keep Title, Price, Variant Options, Quantity & Add to Cart sections exactly as they were] ... -->
 
 		<!-- Accordion Section -->
-		<div class="flex flex-col gap-3 pt-6 border-t ">
-
+		<div class="flex flex-col gap-3 pt-6 border-t">
 			<!-- Description Accordion (Open by default) -->
 			<Accordion initiallyOpen={true}>
 				<AccordionButton>Item Description</AccordionButton>
@@ -306,7 +311,9 @@
 							<div>
 								<p class="text-sm text-neutral-900">
 									<span class="font-medium">Order today to get by</span>
-									<span class="border-b border-dotted border-neutral-400">{shippingInfo.estimatedDelivery}</span>
+									<span class="border-b border-dotted border-neutral-400"
+										>{shippingInfo.estimatedDelivery}</span
+									>
 								</p>
 							</div>
 						</div>
@@ -316,7 +323,9 @@
 							<Package class="w-5 h-5 text-neutral-700 shrink-0 mt-0.5" />
 							<div>
 								<p class="text-sm text-neutral-900">
-									<span class="border-b border-dotted border-neutral-400">Returns & exchanges accepted within {shippingInfo.returnWindow} days</span>
+									<span class="border-b border-dotted border-neutral-400"
+										>Returns & exchanges accepted within {shippingInfo.returnWindow} days</span
+									>
 								</p>
 							</div>
 						</div>
@@ -327,7 +336,9 @@
 							<div>
 								<p class="text-sm text-neutral-900">
 									<span class="font-medium">Cost to ship:</span>
-									<span class="border-b border-dotted border-neutral-400">Rs. {shippingInfo.shippingCost.toFixed(2)}</span>
+									<span class="border-b border-dotted border-neutral-400"
+										>Rs. {shippingInfo.shippingCost.toFixed(2)}</span
+									>
 								</p>
 							</div>
 						</div>
@@ -338,7 +349,9 @@
 							<div>
 								<p class="text-sm text-neutral-900">
 									<span class="font-medium">Ships from:</span>
-									<span class="border-b border-dotted border-neutral-400">{shippingInfo.shipsFrom}</span>
+									<span class="border-b border-dotted border-neutral-400"
+										>{shippingInfo.shipsFrom}</span
+									>
 								</p>
 							</div>
 						</div>
@@ -347,7 +360,10 @@
 						<div class="flex items-start gap-3 pt-2">
 							<div class="flex items-center gap-2">
 								<span class="text-sm text-neutral-900">Deliver to {shippingInfo.deliverTo}</span>
-								<button class="p-1 hover:bg-neutral-200 rounded transition-colors" aria-label="Edit delivery location">
+								<button
+									class="p-1 hover:bg-neutral-200 rounded transition-colors"
+									aria-label="Edit delivery location"
+								>
 									<Pen class="w-3.5 h-3.5 text-neutral-600" />
 								</button>
 							</div>
@@ -355,7 +371,6 @@
 					</div>
 				</AccordionBody>
 			</Accordion>
-
 		</div>
-</div>
+	</div>
 </div>

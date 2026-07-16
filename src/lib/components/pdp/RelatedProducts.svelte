@@ -12,18 +12,16 @@
 	} = $props();
 </script>
 
-<section class="py-16 border-t border-neutral-200">
-	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-		<h2 class="text-2xl font-bold text-neutral-900 mb-8 font-serif">{title}</h2>
+<section class="my-24">
+	<h2 class="text-2xl font-semibold text-neutral-900 my-6 font-serif">{title}</h2>
 
-		{#if products.length > 0}
-			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-				{#each products as product (product.id)}
-					<ProductCard {product} />
-				{/each}
-			</div>
-		{:else}
-			<p class="text-neutral-500 text-center py-8">No related products found.</p>
-		{/if}
-	</div>
+	{#if products.length > 0}
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+			{#each products as product (product.id)}
+				<ProductCard {product} />
+			{/each}
+		</div>
+	{:else}
+		<p class="text-neutral-500 text-center py-8">No related products found.</p>
+	{/if}
 </section>

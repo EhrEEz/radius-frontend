@@ -1,0 +1,12 @@
+{
+	"/(main)": [],
+	"/": [],
+	"/(main)/checkout": [],
+	"/(auth)/login": [],
+	"/(main)/products": [
+		"src/routes/(main)/products/+page.server.ts"
+	],
+	"/(main)/products/[slug]": [
+		"src/routes/(main)/products/[slug]/+page.server.ts"
+	]
+}

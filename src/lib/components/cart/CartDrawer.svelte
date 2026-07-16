@@ -4,6 +4,7 @@
 	import { fly, fade } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';
 	import { ShoppingCart, X } from '@lucide/svelte';
+	import { Button } from '../ui/Button';
 
 	let dialogNode = $state<HTMLDivElement>();
 	let closeButton = $state<HTMLButtonElement>();
@@ -74,7 +75,7 @@
 		<!-- Header -->
 		<header class="flex items-center justify-between px-6 py-4">
 			<!-- Added id="cart-title" to provide an accessible name via aria-labelledby -->
-			<h2 id="cart-title" class="text-lg font-semibold flex gap-3 items-center">
+			<h2 id="cart-title" class="text-lg font-serif font-semibold flex gap-1 items-center">
 				Cart
 				{#if cart.lineCount > 0}
 					<span class="ml-1 text-sm font-normal text-neutral-500">
@@ -168,12 +169,6 @@
 									</div>
 
 									<div class="flex items-center gap-3 text-xs">
-										<a
-											href="/products/{item.slug}?edit={item.id}"
-											class="font-medium text-neutral-700 hover:text-neutral-900 hover:underline"
-										>
-											Edit
-										</a>
 										<button
 											onclick={() => cart.removeItem(item.id)}
 											class="font-medium text-neutral-500 hover:text-red-600 hover:underline"
@@ -199,12 +194,7 @@
 					</span>
 				</div>
 				<p class="mb-4 text-xs text-neutral-500">Shipping and taxes calculated at checkout.</p>
-				<a
-					href="/checkout"
-					class="block w-full rounded-md bg-neutral-900 px-4 py-3 text-center text-sm font-medium text-white transition hover:bg-neutral-800"
-				>
-					Checkout
-				</a>
+				<Button href="/checkout">Checkout</Button>
 				<button
 					onclick={() => cart.close()}
 					class="mt-2 block w-full text-center text-sm font-medium text-neutral-600 hover:text-neutral-900"

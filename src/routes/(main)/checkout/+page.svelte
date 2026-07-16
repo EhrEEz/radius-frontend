@@ -6,31 +6,36 @@
 
 	// --- Mock Cart Data ---
 	const mockCart = [
-			{
-				id: '1',
-				slug: 'wireless-headphones',
-				name: 'Wireless Headphones',
-				variantLabel: 'Color: Matte Black',
-				price: 1500,
-				quantity: 1,
-				image: 'https://placehold.co/100x100?text=Headphones'
-			},
-			{
-				id: '2',
-				slug: 'phone-case',
-				name: 'Silicone Phone Case',
-				variantLabel: 'Model: iPhone 15 Pro',
-				price: 300,
-				quantity: 2,
-				image: 'https://placehold.co/100x100?text=Case'
-			}
-		];
+		{
+			id: '1',
+			slug: 'wireless-headphones',
+			name: 'Wireless Headphones',
+			variantLabel: 'Color: Matte Black',
+			price: 1500,
+			quantity: 1,
+			image: 'https://placehold.co/100x100?text=Headphones'
+		},
+		{
+			id: '2',
+			slug: 'phone-case',
+			name: 'Silicone Phone Case',
+			variantLabel: 'Model: iPhone 15 Pro',
+			price: 300,
+			quantity: 2,
+			image: 'https://placehold.co/100x100?text=Case'
+		}
+	];
 
 	// --- Svelte 5 Runes State ---
 	let currentStep = $state(1);
 
 	let shipping = $state({
-		fullName: '', phone: '', address: '', city: '', postalCode: '', notes: ''
+		fullName: '',
+		phone: '',
+		address: '',
+		city: '',
+		postalCode: '',
+		notes: ''
 	});
 
 	let payment = $state({
@@ -88,18 +93,33 @@
 <div class="py-16">
 	<!-- Progress Indicator -->
 	<div class="mb-8 flex items-center justify-center space-x-4 text-sm font-medium">
-		<div class="flex items-center font-serif {currentStep >= 1 ? 'text-gray-950' : 'text-gray-400'}">
-			<span class="w-6 h-6 rounded-full bg-current/15 flex items-center justify-center text-base mr-2 ">1</span>
+		<div
+			class="flex items-center font-serif {currentStep >= 1 ? 'text-gray-950' : 'text-gray-400'}"
+		>
+			<span
+				class="w-6 h-6 rounded-full bg-current/15 flex items-center justify-center text-base mr-2"
+				>1</span
+			>
 			Cart Review
 		</div>
 		<div class="w-8 h-px bg-gray-300"></div>
-		<div class="flex items-center font-serif {currentStep >= 2 ? 'text-gray-950' : 'text-gray-400'}">
-			<span class="w-6 h-6 rounded-full bg-current/15 flex items-center justify-center text-base mr-2">2</span>
+		<div
+			class="flex items-center font-serif {currentStep >= 2 ? 'text-gray-950' : 'text-gray-400'}"
+		>
+			<span
+				class="w-6 h-6 rounded-full bg-current/15 flex items-center justify-center text-base mr-2"
+				>2</span
+			>
 			Shipping & Payment
 		</div>
 		<div class="w-8 h-px bg-gray-300"></div>
-		<div class="flex items-center font-serif {currentStep >= 3 ? 'text-gray-950' : 'text-gray-400'}">
-			<span class="w-6 h-6 rounded-full bg-current/15 flex items-center justify-center text-base mr-2">3</span>
+		<div
+			class="flex items-center font-serif {currentStep >= 3 ? 'text-gray-950' : 'text-gray-400'}"
+		>
+			<span
+				class="w-6 h-6 rounded-full bg-current/15 flex items-center justify-center text-base mr-2"
+				>3</span
+			>
 			Confirmation
 		</div>
 	</div>
@@ -107,8 +127,11 @@
 	<!-- Step Content -->
 	{#if currentStep === 1}
 		<CheckoutCart
-			cart={mockCart}
-			{subtotal} {shippingFee} {tax} {discountAmount} {total}
+			{subtotal}
+			{shippingFee}
+			{tax}
+			{discountAmount}
+			{total}
 			{coupon}
 			onApplyCoupon={applyCoupon}
 			onRemoveCoupon={removeCoupon}
@@ -116,10 +139,13 @@
 		/>
 	{:else if currentStep === 2}
 		<CheckoutShippingPayment
-			cart={mockCart}
 			{shipping}
 			{payment}
-			{subtotal} {shippingFee} {tax} {discountAmount} {total}
+			{subtotal}
+			{shippingFee}
+			{tax}
+			{discountAmount}
+			{total}
 			onSubmit={handleSubmit}
 			{prevStep}
 		/>

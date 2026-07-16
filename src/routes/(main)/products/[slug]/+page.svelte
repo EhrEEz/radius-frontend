@@ -8,16 +8,19 @@
 	import RelatedProducts from '$lib/components/pdp/RelatedProducts.svelte';
 	import SimilarKeywords from '$lib/components/pdp/SimilarKeywords.svelte';
 	// ⬇️ Import ProductCard here
-	import type { Product, ProductCard } from '$lib/types/product';
+	import type { Product, ProductCard, RelatedSearch } from '$lib/types/product';
 	import { SvelteSet } from 'svelte/reactivity';
 
 	let { data } = $props();
 
-	if (!data?.product) {
-		error(404, 'Product not found');
-	}
+	$effect(() => {
+		if (!data?.product) {
+			error(404, 'Product not found');
+		}
+	});
 
 	let product = $derived<Product>(data.product);
+	let searches = $derived<RelatedSearch[]>(data.relatedSearches);
 
 	let selectedOptionValueIds = $state<Record<string, string>>({});
 
@@ -45,6 +48,7 @@
 	});
 
 	let allImages = $derived.by(() => {
+		// eslint-disable-next-line
 		const combined: any[] = [];
 		const seenUrls = new SvelteSet<string>();
 
@@ -74,29 +78,16 @@
 		selectedOptionValueIds[optionId] = valueId;
 	}
 
-	let relatedSearches = $derived([
-		{ title: 'Photo Jewelry Dish', imageUrl: '/images/related/photo-jewelry-dish.jpg', href: '/search?q=photo+jewelry+dish' },
-		{ title: 'Ring Holder Dish', imageUrl: '/images/related/ring-holder-dish.jpg', href: '/search?q=ring+holder+dish' },
-		{ title: 'Wedding Photo Gift', imageUrl: '/images/related/wedding-photo-gift.jpg', href: '/search?q=wedding+photo+gift' },
-		{ title: 'Sister Wedding Day Gift', imageUrl: '/images/related/sister-wedding-gift.jpg', href: '/search?q=sister+wedding+gift' },
-		{ title: 'Ring Dishes', imageUrl: '/images/related/ring-dishes.jpg', href: '/search?q=ring+dishes' },
-		{ title: 'Trinket Dish', imageUrl: '/images/related/trinket-dish.jpg', href: '/search?q=trinket+dish' },
-		{ title: 'Jewelry Plate', imageUrl: '/images/related/jewelry-plate.jpg', href: '/search?q=jewelry+plate' },
-		{ title: 'Bridesmaid Proposal', imageUrl: '/images/related/bridesmaid-proposal.jpg', href: '/search?q=bridesmaid+proposal' }
-	]);
+	let relatedSearches = $derived(data.relatedSearches);
 
 	// ⬇️ Changed from Product[] to ProductCard[]
-	let frequentlyBoughtTogether = $derived<ProductCard[]>(
-		data.frequentlyBoughtTogether || []
-	);
+	let frequentlyBoughtTogether = $derived<ProductCard[]>(product.frequentlyBoughtTogether || []);
 
 	// ⬇️ Changed from Product[] to ProductCard[]
-	let relatedProducts = $derived<ProductCard[]>(
-		data.relatedProducts || []
-	);
+	let relatedProducts = $derived<ProductCard[]>(product.relatedProducts || []);
 
 	let similarKeywords = $derived<string[]>(
-		data.similarKeywords || ['Handmade', 'Gift', 'Wedding', 'Personalized', 'Custom']
+		product.similarKeywords || ['Handmade', 'Gift', 'Wedding', 'Personalized', 'Custom']
 	);
 
 	// ⬇️ Changed parameter from Product to ProductCard
@@ -113,7 +104,10 @@
 	{#if product.seo}
 		{#if product.seo.title}<title>{product.seo.title}</title>{/if}
 		{#if product.seo.description}<meta name="description" content={product.seo.description} />{/if}
-		{#if product.seo.keywords}<meta name="keywords" content={product.seo.keywords.join(', ')} />{/if}
+		{#if product.seo.keywords}<meta
+				name="keywords"
+				content={product.seo.keywords.join(', ')}
+			/>{/if}
 	{/if}
 </svelte:head>
 
@@ -121,14 +115,7 @@
 	<div class="grid grid-cols-1 lg:grid-cols-12 gap-2 lg:gap-8">
 		<div class="col-span-7">
 			<MediaGallery images={galleryImages} {allImages} />
-			<RelatedSearches searches={relatedSearches} />
-
-			{#if frequentlyBoughtTogether.length > 0}
-				<FrequentlyBoughtTogether
-					products={frequentlyBoughtTogether}
-					onAddToCart={handleAddToCart}
-				/>
-			{/if}
+			<RelatedSearches {searches} />
 		</div>
 
 		<div class="col-span-5 self-start lg:ps-16">
@@ -140,7 +127,9 @@
 			/>
 		</div>
 	</div>
-
+	{#if frequentlyBoughtTogether.length > 0}
+		<FrequentlyBoughtTogether products={frequentlyBoughtTogether} onAddToCart={handleAddToCart} />
+	{/if}
 	{#if relatedProducts.length > 0}
 		<RelatedProducts products={relatedProducts} title="You May Also Like" />
 	{/if}

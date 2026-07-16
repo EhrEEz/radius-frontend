@@ -1,5 +1,4 @@
 @import 'tailwindcss';
-@import "$lib/css/wrapper.css";
 
 @theme {
 	/* Font Family */
