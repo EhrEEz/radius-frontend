@@ -2,7 +2,7 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import ProductCard from '$lib/components/product/ProductCard.svelte';
-	import { SlidersHorizontal, X, Star, ChevronDown, Search } from '@lucide/svelte';
+	import { SlidersHorizontal, X, Star, ChevronDown } from '@lucide/svelte';
 	import type { ProductCard as ProductCardType } from '$lib/types/product';
 	import { Button } from '$lib/components/ui/Button';
 
@@ -369,23 +369,8 @@
 						{/if}
 					</div>
 
-					<!-- Search -->
-					<div class="mb-6">
-						<div class="mb-2 block text-sm font-medium text-gray-700">Search</div>
-						<div class="relative">
-							<Search class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-							<input
-								type="text"
-								placeholder="Search products..."
-								value={searchQuery}
-								oninput={(e) => updateSearch(e.currentTarget.value)}
-								class="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-							/>
-						</div>
-					</div>
-
 					<!-- Categories -->
-					<div class="mb-6 border-t border-gray-100 pt-6">
+					<div class="mb-6">
 						<h3 class="mb-3 text-sm font-semibold text-gray-900">Categories</h3>
 						<div class="space-y-2">
 							{#each allCategories as category}
@@ -403,7 +388,7 @@
 					</div>
 
 					<!-- Price Range -->
-					<div class="mb-6 border-t border-gray-100 pt-6">
+					<div class="mb-6">
 						<h3 class="mb-3 text-sm font-semibold text-gray-900">Price Range</h3>
 						<div class="flex items-center gap-2">
 							<input
@@ -425,7 +410,7 @@
 					</div>
 
 					<!-- Rating -->
-					<div class="border-t border-gray-100 pt-6">
+					<div class="mt-6">
 						<h3 class="mb-3 text-sm font-semibold text-gray-900">Minimum Rating</h3>
 						<div class="space-y-2">
 							{#each [4, 3, 2, 1] as rating}

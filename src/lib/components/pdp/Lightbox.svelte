@@ -2,6 +2,8 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
 	import type { Image } from '$lib/types/product';
+	import { SvelteMap } from 'svelte/reactivity';
+	import { X } from '@lucide/svelte';
 
 	let {
 		images,
@@ -13,7 +15,7 @@
 		open: boolean;
 	} = $props();
 
-	let currentIndex = $state(initialIndex);
+	let currentIndex = $derived(initialIndex);
 	let scale = $state(1);
 	let translateX = $state(0);
 	let translateY = $state(0);
@@ -28,20 +30,25 @@
 
 	// Grouping logic for thumbnails
 	let groupedImages = $derived.by(() => {
-			const groups = new Map<string, { name: string; images: { image: any; index: number }[] }>();
+		const groups = new SvelteMap<
+			string,
+			// eslint-disable-next-line
+			{ name: string; images: { image: any; index: number }[] }
+		>();
 
-			images.forEach((img, index) => {
-				// Read the variantName we attached in the page component
-				const key = (img as any).variantName || 'All Images';
+		images.forEach((img, index) => {
+			// Read the variantName we attached in the page component
+			// eslint-disable-next-line
+			const key = (img as any).variantName || 'All Images';
 
-				if (!groups.has(key)) {
-					groups.set(key, { name: key, images: [] });
-				}
-				groups.get(key)!.images.push({ image: img, index });
-			});
-
-			return Array.from(groups.values());
+			if (!groups.has(key)) {
+				groups.set(key, { name: key, images: [] });
+			}
+			groups.get(key)!.images.push({ image: img, index });
 		});
+
+		return Array.from(groups.values());
+	});
 
 	$effect(() => {
 		if (open) {
@@ -109,21 +116,28 @@
 		if (e.key === 'ArrowRight') next();
 		if (e.key === 'ArrowLeft') prev();
 	}
-
-	function stopClick(e: MouseEvent) {
-		e.stopPropagation();
-	}
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
 
 {#if open}
-	<!-- Main overlay: Changed to flex-col. Clicking anywhere on this background closes the lightbox -->
+	<!--
+		Main overlay:
+		1. `e.target === e.currentTarget` ensures we only close when clicking the backdrop itself,
+		   ignoring clicks on the image or thumbnails.
+		2. `onkeydown` and `tabindex` satisfy the a11y requirement for clickable divs.
+	-->
 	<div
 		class="fixed inset-0 z-60 flex flex-col bg-black/90 backdrop-blur-sm"
-		onclick={close}
-		role="presentation"
+		onclick={(e) => {
+			if (e.target === e.currentTarget) {
+				close();
+			}
+		}}
+		onkeydown={handleKeydown}
+		tabindex="-1"
 		transition:fade={{ duration: 200 }}
+		role="dialog"
 	>
 		<!-- Close Button -->
 		<button
@@ -131,9 +145,7 @@
 			class="absolute top-4 right-4 p-2 text-white hover:bg-white/10 rounded-full z-20"
 			aria-label="Close viewer"
 		>
-			<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-			</svg>
+			<X />
 		</button>
 
 		<!-- Main Image Area (Takes up remaining vertical space) -->
@@ -145,7 +157,12 @@
 					aria-label="Previous image"
 				>
 					<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M15 19l-7-7 7-7"
+						/>
 					</svg>
 				</button>
 			{/if}
@@ -157,7 +174,12 @@
 					aria-label="Next image"
 				>
 					<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M9 5l7 7-7 7"
+						/>
 					</svg>
 				</button>
 			{/if}
@@ -179,24 +201,27 @@
 				aria-modal="true"
 				aria-label="Image viewer"
 			>
-				<!-- The image itself stops click propagation so clicking it doesn't close the lightbox -->
+				<!-- Removed onclick={stopClick} to satisfy a11y_no_noninteractive_element_interactions -->
 				<img
 					src={currentImage?.url}
 					alt={currentImage?.alt}
 					class="max-w-full max-h-full object-contain transition-transform duration-100 select-none pointer-events-auto"
 					style="transform: scale({scale}) translate({translateX}px, {translateY}px);"
 					draggable="false"
-					onclick={stopClick}
 				/>
 			</div>
 		</div>
 
-		<!-- Variant Grouped Thumbnails (No longer absolute, sits cleanly below the image) -->
-		<div class="flex-shrink-0 w-full max-w-5xl mx-auto px-4 pb-6 z-10" onclick={stopClick}>
-			<div class="flex flex-col gap-4 max-h-40 overflow-y-auto bg-black/60 backdrop-blur-md p-4 rounded-xl border border-white/10 shadow-2xl">
+		<!-- Variant Grouped Thumbnails (Removed onclick={stopClick} from wrapper) -->
+		<div class="shrink-0 w-full max-w-5xl mx-auto px-4 pb-6 z-10">
+			<div
+				class="flex flex-col gap-4 max-h-40 overflow-y-auto bg-black/60 backdrop-blur-md p-4 rounded-xl border border-white/10 shadow-2xl"
+			>
 				{#each groupedImages as group}
 					<div class="flex flex-col gap-2">
-						<span class="text-xs text-white/80 uppercase tracking-wider font-semibold px-1">{group.name}</span>
+						<span class="text-xs text-white/80 uppercase tracking-wider font-semibold px-1"
+							>{group.name}</span
+						>
 						<div class="flex gap-3 overflow-x-auto pb-2 custom-scrollbar">
 							{#each group.images as { image, index }}
 								<button
@@ -204,10 +229,18 @@
 										currentIndex = index;
 										resetZoom();
 									}}
-									class="relative flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all {index === currentIndex ? 'border-white ring-2 ring-white/50 scale-105' : 'border-transparent hover:border-white/50 opacity-60 hover:opacity-100'}"
+									class="relative shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all {index ===
+									currentIndex
+										? 'border-white ring-2 ring-white/50 scale-105'
+										: 'border-transparent hover:border-white/50 opacity-60 hover:opacity-100'}"
 									aria-label="Go to image {index + 1}"
 								>
-									<img src={image.url} alt={image.alt} class="w-full h-full object-cover pointer-events-none" draggable="false" />
+									<img
+										src={image.url}
+										alt={image.alt}
+										class="w-full h-full object-cover pointer-events-none"
+										draggable="false"
+									/>
 								</button>
 							{/each}
 						</div>
