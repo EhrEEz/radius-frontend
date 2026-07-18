@@ -9,17 +9,25 @@ export const nodes = [
 	() => import('./nodes/5'),
 	() => import('./nodes/6'),
 	() => import('./nodes/7'),
-	() => import('./nodes/8')
+	() => import('./nodes/8'),
+	() => import('./nodes/9'),
+	() => import('./nodes/10'),
+	() => import('./nodes/11'),
+	() => import('./nodes/12')
 ];
 
 export const server_loads = [];
 
 export const dictionary = {
-		"/(main)": [5,[3]],
-		"/(main)/checkout": [6,[3]],
-		"/(auth)/login": [4,[2]],
-		"/(main)/products": [~7,[3]],
-		"/(main)/products/[slug]": [~8,[3]]
+		"/(main)": [9,[3]],
+		"/(main)/checkout": [10,[3]],
+		"/(auth)/forgot-password": [4,[2]],
+		"/(auth)/login": [5,[2]],
+		"/(main)/products": [~11,[3]],
+		"/(main)/products/[slug]": [~12,[3]],
+		"/(auth)/reset-password": [6,[2]],
+		"/(auth)/signup": [7,[2]],
+		"/(auth)/verify-email": [8,[2]]
 	};
 
 export const hooks = {
