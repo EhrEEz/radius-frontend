@@ -11,7 +11,7 @@ type OptionalUnion<U extends Record<string, any>, A extends keyof U = U extends 
 export type Snapshot<T = any> = Kit.Snapshot<T>;
 export type ErrorProps = { error: App.Error };
 type PageParentData = Omit<EnsureDefined<import('../$types.js').LayoutData>, keyof LayoutData> & EnsureDefined<LayoutData>;
-type LayoutRouteId = RouteId | "/(main)" | "/(main)/checkout" | "/(main)/products" | "/(main)/products/[slug]"
+type LayoutRouteId = RouteId | "/(main)" | "/(main)/categories" | "/(main)/categories/[slug]" | "/(main)/checkout" | "/(main)/products" | "/(main)/products/[slug]"
 type LayoutParams = RouteParams & { slug?: string | undefined }
 type LayoutParentData = EnsureDefined<import('../$types.js').LayoutData>;
 

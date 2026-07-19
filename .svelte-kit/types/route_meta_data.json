@@ -1,6 +1,8 @@
 {
 	"/(main)": [],
 	"/": [],
+	"/(main)/categories": [],
+	"/(main)/categories/[slug]": [],
 	"/(main)/checkout": [],
 	"/(auth)/login": [],
 	"/(main)/products": [
