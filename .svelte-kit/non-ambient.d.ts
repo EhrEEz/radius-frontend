@@ -27,9 +27,10 @@ export {};
 
 declare module "$app/types" {
 	export interface AppTypes {
-		RouteId(): "/(main)" | "/(auth)" | "/" | "/(main)/categories" | "/(main)/categories/[slug]" | "/(main)/checkout" | "/(main)/checkout/_components" | "/(auth)/login" | "/(main)/products" | "/(main)/products/[slug]";
+		RouteId(): "/(main)" | "/(auth)" | "/" | "/(main)/categories" | "/(main)/categories/[slug]" | "/(main)/checkout" | "/(main)/checkout/_components" | "/(main)/collections" | "/(main)/collections/[slug]" | "/(auth)/login" | "/(main)/products" | "/(main)/products/[slug]";
 		RouteParams(): {
 			"/(main)/categories/[slug]": { slug: string };
+			"/(main)/collections/[slug]": { slug: string };
 			"/(main)/products/[slug]": { slug: string }
 		};
 		LayoutParams(): {
@@ -40,11 +41,13 @@ declare module "$app/types" {
 			"/(main)/categories/[slug]": { slug: string };
 			"/(main)/checkout": Record<string, never>;
 			"/(main)/checkout/_components": Record<string, never>;
+			"/(main)/collections": { slug?: string | undefined };
+			"/(main)/collections/[slug]": { slug: string };
 			"/(auth)/login": Record<string, never>;
 			"/(main)/products": { slug?: string | undefined };
 			"/(main)/products/[slug]": { slug: string }
 		};
-		Pathname(): "/" | "/categories" | `/categories/${string}` & {} | "/checkout" | "/login" | "/products" | `/products/${string}` & {};
+		Pathname(): "/" | "/categories" | `/categories/${string}` & {} | "/checkout" | "/collections" | `/collections/${string}` & {} | "/login" | "/products" | `/products/${string}` & {};
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
 		Asset(): "/fonts/FR/Fraunces--latin_basic.woff2" | "/fonts/FR/Fraunces--latin_ext.woff2" | "/fonts/FR/Fraunces--vietnamese.woff2" | "/fonts/FR/Fraunces-Italic--latin_basic.woff2" | "/fonts/FR/Fraunces-Italic--latin_ext.woff2" | "/fonts/FR/Fraunces-Italic--vietnamese.woff2" | "/fonts/HK/HKGrotesk-Black.woff" | "/fonts/HK/HKGrotesk-Black.woff2" | "/fonts/HK/HKGrotesk-BlackItalic.woff" | "/fonts/HK/HKGrotesk-BlackItalic.woff2" | "/fonts/HK/HKGrotesk-Bold.woff" | "/fonts/HK/HKGrotesk-Bold.woff2" | "/fonts/HK/HKGrotesk-BoldItalic.woff" | "/fonts/HK/HKGrotesk-BoldItalic.woff2" | "/fonts/HK/HKGrotesk-ExtraBold.woff" | "/fonts/HK/HKGrotesk-ExtraBold.woff2" | "/fonts/HK/HKGrotesk-ExtraBoldItalic.woff" | "/fonts/HK/HKGrotesk-ExtraBoldItalic.woff2" | "/fonts/HK/HKGrotesk-ExtraLight.woff" | "/fonts/HK/HKGrotesk-ExtraLight.woff2" | "/fonts/HK/HKGrotesk-ExtraLightItalic.woff" | "/fonts/HK/HKGrotesk-ExtraLightItalic.woff2" | "/fonts/HK/HKGrotesk-Italic.woff" | "/fonts/HK/HKGrotesk-Italic.woff2" | "/fonts/HK/HKGrotesk-Light.woff" | "/fonts/HK/HKGrotesk-Light.woff2" | "/fonts/HK/HKGrotesk-LightItalic.woff" | "/fonts/HK/HKGrotesk-LightItalic.woff2" | "/fonts/HK/HKGrotesk-Medium.woff" | "/fonts/HK/HKGrotesk-Medium.woff2" | "/fonts/HK/HKGrotesk-MediumItalic.woff" | "/fonts/HK/HKGrotesk-MediumItalic.woff2" | "/fonts/HK/HKGrotesk-Regular.woff" | "/fonts/HK/HKGrotesk-Regular.woff2" | "/fonts/HK/HKGrotesk-SemiBold.woff" | "/fonts/HK/HKGrotesk-SemiBold.woff2" | "/fonts/HK/HKGrotesk-SemiBoldItalic.woff" | "/fonts/HK/HKGrotesk-SemiBoldItalic.woff2" | "/fonts/HK/HKGrotesk-Thin.woff" | "/fonts/HK/HKGrotesk-Thin.woff2" | "/fonts/HK/HKGrotesk-ThinItalic.woff" | "/fonts/HK/HKGrotesk-ThinItalic.woff2" | "/robots.txt" | string & {};
 	}

@@ -4,6 +4,8 @@
 	"/(main)/categories": [],
 	"/(main)/categories/[slug]": [],
 	"/(main)/checkout": [],
+	"/(main)/collections": [],
+	"/(main)/collections/[slug]": [],
 	"/(auth)/login": [],
 	"/(main)/products": [
 		"src/routes/(main)/products/+page.server.ts"

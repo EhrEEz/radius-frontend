@@ -3,14 +3,12 @@
 	import { goto } from '$app/navigation';
 	import { ChevronDown, X, SlidersHorizontal } from '@lucide/svelte';
 	import { Button } from '$lib/components/ui/Button';
-
-	import BannerSection from '$lib/components/layout/BannerSection.svelte';
+	import CollectionTitlePage from '$lib/components/layout/CollectionTitlePage.svelte';
 	import FilterSidebar from '$lib/components/layout/FilterSidebar.svelte';
 	import Pagination from '$lib/components/layout/Pagination.svelte';
-	import RecommendedProducts from '$lib/components/sections/RecommendedProducts.svelte';
+	import RelatedSearches from '$lib/components/pdp/RelatedSearches.svelte';
+	import type { RelatedSearch, ProductCard as ProductCardType } from '$lib/types/product';
 	import ProductCard from '$lib/components/product/ProductCard.svelte';
-
-	import type { ProductCard as ProductCardType } from '$lib/types/product';
 
 	// --- Mock Data ---
 	type FilterableProduct = ProductCardType & { categories?: string[] };
@@ -448,8 +446,49 @@
 			rating: { average: 4.8, count: 142 }
 		}
 	];
+	let searches = $derived<RelatedSearch[]>([
+		{
+			title: 'Premium Leather Dopp Kits',
+			imageUrl: 'https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=400&h=400&fit=crop',
+			href: '/search?q=leather+dopp+kit'
+		},
+		{
+			title: 'Canvas Travel Backpacks',
+			imageUrl: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop',
+			href: '/search?q=canvas+travel+backpack'
+		},
+		{
+			title: 'Leather Care & Conditioning Kits',
+			imageUrl: 'https://images.unsplash.com/photo-1629198688000-71f23e745b6e?w=400&h=400&fit=crop',
+			href: '/search?q=leather+care+kit'
+		},
+		{
+			title: 'Minimalist Leather Wallets',
+			imageUrl: 'https://images.unsplash.com/photo-1627123424574-724758594e93?w=400&h=400&fit=crop',
+			href: '/search?q=leather+wallet'
+		},
+		{
+			title: 'Weekender Bags for Men',
+			imageUrl: 'https://images.unsplash.com/photo-1547949003-9792a18a2601?w=400&h=400&fit=crop',
+			href: '/search?q=weekender+bag+men'
+		},
+		{
+			title: 'Leather Luggage Tags',
+			imageUrl: 'https://images.unsplash.com/photo-1581557991964-125469da3b8a?w=400&h=400&fit=crop',
+			href: '/search?q=leather+luggage+tags'
+		},
 
-	const recommendedProducts = allProducts.slice(2, 6);
+		{
+			title: 'Travel Toiletry Bags',
+			imageUrl: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop',
+			href: '/search?q=toiletry+bag'
+		},
+		{
+			title: 'Leather Belt Collections',
+			imageUrl: 'https://images.unsplash.com/photo-1624222247344-550fb60583dc?w=400&h=400&fit=crop',
+			href: '/search?q=leather+belt'
+		}
+	]);
 
 	// --- 1. State (Initialized from URL) ---
 	let searchQuery = $state(page.url.searchParams.get('q') || '');
@@ -612,158 +651,154 @@
 	<title>Bags | Radius</title>
 </svelte:head>
 
-<BannerSection
-	title="Bags"
-	subtitle="Crafted for the journey, designed for everyday life."
+<CollectionTitlePage
+	title="Trending Products"
+	subtitle="Products that quickly ran out of stock recently."
 	bgColor="bg-amber-100"
 	textColor="text-amber-950"
 	overlayOpacity="bg-transparent"
 	align="center"
 />
+<div class="my-8">
+	<div class="flex flex-wrap items-center gap-4">
+		<!-- Left Side: Filter Button + Active Filters -->
+		<div class="flex flex-wrap items-center gap-3">
+			<!-- Filter Toggle Button -->
+			<button
+				onclick={() => (isMobileFilterOpen = !isMobileFilterOpen)}
+				class="flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+			>
+				<SlidersHorizontal class="h-4 w-4" />
+				All Filters
+			</button>
 
-<div class="py-8">
-	<!-- Header -->
-
-	<div class="mb-8">
-		<div class="flex flex-wrap items-center gap-4">
-			<!-- Left Side: Filter Button + Active Filters -->
-			<div class="flex flex-wrap items-center gap-3">
-				<!-- Filter Toggle Button -->
-				<button
-					onclick={() => (isMobileFilterOpen = !isMobileFilterOpen)}
-					class="flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-				>
-					<SlidersHorizontal class="h-4 w-4" />
-					All Filters
-				</button>
-
-				<!-- Active Filter Pills -->
-				{#if selectedCategories.length > 0 || minPrice || maxPrice || minRating || searchQuery}
-					{#if searchQuery}
-						<span
-							class="inline-flex items-center gap-1 rounded-full bg-white border border-gray-200 px-3 py-1 text-xs font-medium text-gray-800"
-						>
-							Search: "{searchQuery}"
-							<button onclick={() => updateSearch('')} class="hover:text-violet-700 ml-1">
-								<X class="h-3 w-3" />
-							</button>
-						</span>
-					{/if}
-
-					{#each selectedCategories as category}
-						<span
-							class="inline-flex items-center gap-1 rounded-full bg-white border border-gray-200 px-3 py-1 text-xs font-medium text-gray-800"
-						>
-							{category}
-							<button onclick={() => toggleCategory(category)} class="hover:text-violet-700 ml-1">
-								<X class="h-3 w-3" />
-							</button>
-						</span>
-					{/each}
-
-					{#if minPrice || maxPrice}
-						<span
-							class="inline-flex items-center gap-1 rounded-full bg-violet-50 border border-violet-200 px-3 py-1.5 text-xs font-medium text-violet-900"
-						>
-							Price: {minPrice ? `$${minPrice}` : '$0'} - {maxPrice ? `$${maxPrice}` : '$∞'}
-							<button
-								onclick={() => {
-									updateMinPrice('');
-									updateMaxPrice('');
-								}}
-								class="hover:text-violet-700 ml-1"
-							>
-								<X class="h-3 w-3" />
-							</button>
-						</span>
-					{/if}
-
-					{#if minRating}
-						<span
-							class="inline-flex items-center gap-1 rounded-full bg-white border border-gray-200 px-3 py-1 text-xs font-medium text-gray-800"
-						>
-							{minRating}+ Stars
-							<button onclick={() => updateMinRating(null)} class="hover:text-violet-700 ml-1">
-								<X class="h-3 w-3" />
-							</button>
-						</span>
-					{/if}
-				{/if}
-			</div>
-
-			<!-- Right Side: Item Count + Sort -->
-			<div class="ml-auto flex items-center gap-4">
-				<span class="text-sm text-gray-600">{filteredProducts.length} products</span>
-
-				<div class="relative">
-					<select
-						value={sortBy}
-						onchange={(e) => updateSort(e.currentTarget.value)}
-						class="appearance-none rounded-full border border-gray-300 bg-white py-2 pl-4 pr-10 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:border-violet-950 focus:outline-none focus:ring-1 focus:ring-violet-950 cursor-pointer"
+			<!-- Active Filter Pills -->
+			{#if selectedCategories.length > 0 || minPrice || maxPrice || minRating || searchQuery}
+				{#if searchQuery}
+					<span
+						class="inline-flex items-center gap-1 rounded-full bg-white border border-gray-200 px-3 py-1 text-xs font-medium text-gray-800"
 					>
-						<option value="featured">Sort by: Featured</option>
-						<option value="price_asc">Sort by: Price: Low to High</option>
-						<option value="price_desc">Sort by: Price: High to Low</option>
-						<option value="name_asc">Sort by: Name: A to Z</option>
-						<option value="name_desc">Sort by: Name: Z to A</option>
-						<option value="rating_desc">Sort by: Highest Rated</option>
-					</select>
-					<ChevronDown
-						class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500"
-					/>
-				</div>
-			</div>
-		</div>
-	</div>
+						Search: "{searchQuery}"
+						<button onclick={() => updateSearch('')} class="hover:text-violet-700 ml-1">
+							<X class="h-3 w-3" />
+						</button>
+					</span>
+				{/if}
 
-	<!-- Product Grid -->
-	<div class="flex flex-col lg:flex-row items-start">
-		<FilterSidebar
-			bind:isMobileFilterOpen
-			allCategories={[]}
-			{selectedCategories}
-			{minPrice}
-			{maxPrice}
-			{minRating}
-			{searchQuery}
-			onToggleCategory={toggleCategory}
-			onUpdateMinPrice={updateMinPrice}
-			onUpdateMaxPrice={updateMaxPrice}
-			onUpdateMinRating={updateMinRating}
-			onUpdateSearch={updateSearch}
-			onClearAll={clearAllFilters}
-		/>
-		<div class="flex-1 w-full">
-			{#if paginatedProducts.length > 0}
-				<div
-					class={[
-						'grid grid-cols-1 gap-6 sm:grid-cols-2 ',
-						isMobileFilterOpen
-							? 'lg:grid-cols-3 xl:grid-cols-4'
-							: 'sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5'
-					]}
-				>
-					{#each paginatedProducts as product (product.id)}
-						<ProductCard
-							{product}
-							isOnSale={product.price.discountedAmount !== undefined &&
-								product.price.discountedAmount < product.price.amount}
-						/>
-					{/each}
-				</div>
+				{#each selectedCategories as category}
+					<span
+						class="inline-flex items-center gap-1 rounded-full bg-white border border-gray-200 px-3 py-1 text-xs font-medium text-gray-800"
+					>
+						{category}
+						<button onclick={() => toggleCategory(category)} class="hover:text-violet-700 ml-1">
+							<X class="h-3 w-3" />
+						</button>
+					</span>
+				{/each}
 
-				<Pagination {currentPage} {totalPages} onPageChange={changePage} />
-			{:else}
-				<div
-					class="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-300 bg-white py-16 text-center"
-				>
-					<p class="text-2xl font-medium text-gray-900 font-serif">Whoops! No products found</p>
-					<p class="mt-1 text-sm text-gray-500">Try adjusting your filters or search query.</p>
-					<Button class="mt-4" size="sm" onclick={clearAllFilters}>Clear all filters</Button>
-				</div>
+				{#if minPrice || maxPrice}
+					<span
+						class="inline-flex items-center gap-1 rounded-full bg-violet-50 border border-violet-200 px-3 py-1.5 text-xs font-medium text-violet-900"
+					>
+						Price: {minPrice ? `$${minPrice}` : '$0'} - {maxPrice ? `$${maxPrice}` : '$∞'}
+						<button
+							onclick={() => {
+								updateMinPrice('');
+								updateMaxPrice('');
+							}}
+							class="hover:text-violet-700 ml-1"
+						>
+							<X class="h-3 w-3" />
+						</button>
+					</span>
+				{/if}
+
+				{#if minRating}
+					<span
+						class="inline-flex items-center gap-1 rounded-full bg-white border border-gray-200 px-3 py-1 text-xs font-medium text-gray-800"
+					>
+						{minRating}+ Stars
+						<button onclick={() => updateMinRating(null)} class="hover:text-violet-700 ml-1">
+							<X class="h-3 w-3" />
+						</button>
+					</span>
+				{/if}
 			{/if}
 		</div>
-	</div>
 
-	<RecommendedProducts title="Also take a look at these products" products={recommendedProducts} />
+		<!-- Right Side: Item Count + Sort -->
+		<div class="ml-auto flex items-center gap-4">
+			<span class="text-sm text-gray-600">{filteredProducts.length} products</span>
+
+			<div class="relative">
+				<select
+					value={sortBy}
+					onchange={(e) => updateSort(e.currentTarget.value)}
+					class="appearance-none rounded-full border border-gray-300 bg-white py-2 pl-4 pr-10 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:border-violet-950 focus:outline-none focus:ring-1 focus:ring-violet-950 cursor-pointer"
+				>
+					<option value="featured">Sort by: Featured</option>
+					<option value="price_asc">Sort by: Price: Low to High</option>
+					<option value="price_desc">Sort by: Price: High to Low</option>
+					<option value="name_asc">Sort by: Name: A to Z</option>
+					<option value="name_desc">Sort by: Name: Z to A</option>
+					<option value="rating_desc">Sort by: Highest Rated</option>
+				</select>
+				<ChevronDown
+					class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500"
+				/>
+			</div>
+		</div>
+	</div>
 </div>
+<div class="flex flex-col lg:flex-row items-start">
+	<FilterSidebar
+		bind:isMobileFilterOpen
+		allCategories={[]}
+		{selectedCategories}
+		{minPrice}
+		{maxPrice}
+		{minRating}
+		{searchQuery}
+		onToggleCategory={toggleCategory}
+		onUpdateMinPrice={updateMinPrice}
+		onUpdateMaxPrice={updateMaxPrice}
+		onUpdateMinRating={updateMinRating}
+		onUpdateSearch={updateSearch}
+		onClearAll={clearAllFilters}
+	/>
+	<div class="flex-1 w-full">
+		{#if paginatedProducts.length > 0}
+			<div
+				class={[
+					'grid grid-cols-1 gap-6 sm:grid-cols-2 ',
+					isMobileFilterOpen
+						? 'lg:grid-cols-3 xl:grid-cols-4'
+						: 'sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5'
+				]}
+			>
+				{#each paginatedProducts as product (product.id)}
+					<ProductCard
+						{product}
+						isOnSale={product.price.discountedAmount !== undefined &&
+							product.price.discountedAmount < product.price.amount}
+					/>
+				{/each}
+			</div>
+
+			<Pagination {currentPage} {totalPages} onPageChange={changePage} />
+		{:else}
+			<div
+				class="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-300 bg-white py-16 text-center"
+			>
+				<p class="text-2xl font-medium text-gray-900 font-serif">Whoops! No products found</p>
+				<p class="mt-1 text-sm text-gray-500">Try adjusting your filters or search query.</p>
+				<Button class="mt-4" size="sm" onclick={clearAllFilters}>Clear all filters</Button>
+			</div>
+		{/if}
+	</div>
+</div>
+
+<RelatedSearches
+	{searches}
+	class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+/>

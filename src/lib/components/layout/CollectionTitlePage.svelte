@@ -45,7 +45,7 @@
 	<!-- 1. Background Layer -->
 	{#if bgVideo}
 		<video
-			class="absolute inset-0 h-full w-full object-cover rounded-4xl"
+			class="full-width absolute inset-0 h-full w-full object-cover"
 			autoplay
 			muted
 			loop
@@ -58,18 +58,16 @@
 		<img
 			src={bgImage}
 			alt={title}
-			class="absolute inset-0 h-full w-full object-cover rounded-4xl"
+			class="full-width absolute inset-0 h-full w-full object-cover"
 			loading="eager"
 		/>
 	{:else}
-		<div class={['absolute inset-0 h-full w-full rounded-4xl', bgColor]}></div>
+		<div class={['full-width absolute inset-0 h-full w-full', bgColor]}></div>
 	{/if}
 
 	<!-- 2. Overlay Layer (Ensures text contrast) -->
 	<div class={['absolute inset-0 rounded-4xl', overlayOpacity]}></div>
-	<div
-		class="absolute inset-0 border border-gray-600 rounded-4xl mix-blend-multiply opacity-5"
-	></div>
+
 	<!-- 3. Content Layer -->
 	<div
 		class={[
