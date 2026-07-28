@@ -1,0 +1,22 @@
+[
+  {
+    "id": "1",
+    "label": "Home",
+    "fullName": "Juan Dela Cruz",
+    "phone": "0917 123 4567",
+    "address": "123 Sampaguita St., Barangay San Isidro",
+    "city": "Quezon City",
+    "notes": "Please leave at the front gate.",
+    "isDefault": true
+  },
+  {
+    "id": "2",
+    "label": "Office",
+    "fullName": "Juan Dela Cruz",
+    "phone": "0918 987 6543",
+    "address": "Unit 4B, Tech Tower, Ayala Avenue",
+    "city": "Makati City",
+    "notes": "Call upon arrival. Receiving hours: 9AM - 5PM.",
+    "isDefault": false
+  }
+]
