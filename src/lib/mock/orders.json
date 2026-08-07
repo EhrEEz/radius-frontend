@@ -1,0 +1,30 @@
+[
+  {
+    "id": "ORD-2023-8842",
+    "date": "2023-10-15",
+    "status": "Delivered",
+    "total": 4750.00,
+    "items": [
+      { "id": "item_1", "name": "Ergonomic Wireless Mouse", "image": "https://placehold.co/100x100/e2e8f0/64748b?text=M", "quantity": 1, "price": 1250.00 },
+      { "id": "item_2", "name": "USB-C Hub Adapter", "image": "https://placehold.co/100x100/e2e8f0/64748b?text=Hub", "quantity": 1, "price": 850.50 }
+    ]
+  },
+  {
+    "id": "ORD-2023-9105",
+    "date": "2023-11-02",
+    "status": "Shipped",
+    "total": 3500.00,
+    "items": [
+      { "id": "item_3", "name": "Mechanical Keyboard (Blue Switch)", "image": "https://placehold.co/100x100/e2e8f0/64748b?text=KB", "quantity": 1, "price": 3500.00 }
+    ]
+  },
+  {
+    "id": "ORD-2023-9550",
+    "date": "2023-11-10",
+    "status": "Processing",
+    "total": 2100.00,
+    "items": [
+      { "id": "item_4", "name": "Ultra-Wide Monitor Stand", "image": "https://placehold.co/100x100/e2e8f0/64748b?text=Stand", "quantity": 1, "price": 2100.00 }
+    ]
+  }
+]

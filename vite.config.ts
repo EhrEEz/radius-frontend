@@ -22,7 +22,14 @@ export default defineConfig({
 				config: (config) => {
 					config.include.push('../drizzle.config.ts');
 				}
-			}
+      },
+
 		})
-	]
+  ],
+  optimizeDeps: {
+		include: ['swiper/element/bundle']
+	},
+	ssr: {
+		noExternal: ['swiper']
+	}
 });

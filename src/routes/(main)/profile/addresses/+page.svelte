@@ -37,7 +37,7 @@
       phone: addr.phone,
       address: addr.address,
       city: addr.city,
-      notes: addr.notes
+      notes: addr.notes || ""
     };
     showModal = true;
   }
@@ -61,7 +61,7 @@
   }
 </script>
 
-<div class="max-w-4xl mx-auto space-y-8">
+<div class="space-y-8">
   <!-- Header -->
   <div class="flex justify-between items-center">
     <h1 class="text-3xl font-semibold text-gray-900 font-serif">Addresses</h1>

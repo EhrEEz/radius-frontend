@@ -1,0 +1,22 @@
+[
+  {
+    "id": "rev_1",
+    "productId": "prod_99",
+    "productName": "Noise Cancelling Headphones",
+    "productSlug": "noise-cancelling-headphones",
+    "productImage": "https://placehold.co/100x100/e2e8f0/64748b?text=HP",
+    "rating": 5,
+    "comment": "Amazing sound quality and the battery life is incredible. Highly recommend for commuting!",
+    "date": "2023-09-12"
+  },
+  {
+    "id": "rev_2",
+    "productId": "prod_85",
+    "productName": "Laptop Sleeve (14-inch)",
+    "productSlug": "laptop-sleeve-14",
+    "productImage": "https://placehold.co/100x100/e2e8f0/64748b?text=Sleeve",
+    "rating": 4,
+    "comment": "Good quality material, fits perfectly. Only giving 4 stars because the zipper feels a bit cheap.",
+    "date": "2023-08-05"
+  }
+]

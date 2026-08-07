@@ -1,0 +1,24 @@
+[
+  {
+    "id": "canc_1",
+    "orderId": "ORD-2023-8842",
+    "date": "2023-10-15",
+    "reason": "Ordered by mistake",
+    "status": "Refunded",
+    "refundAmount": 1500.00,
+    "items": [
+      { "name": "Wireless Mechanical Keyboard", "quantity": 1, "price": 1500.00 }
+    ]
+  },
+  {
+    "id": "canc_2",
+    "orderId": "ORD-2023-9105",
+    "date": "2023-11-02",
+    "reason": "Item out of stock, requested cancellation",
+    "status": "Approved",
+    "refundAmount": 850.50,
+    "items": [
+      { "name": "USB-C Hub Adapter", "quantity": 1, "price": 850.50 }
+    ]
+  }
+]

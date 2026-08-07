@@ -1,0 +1,13 @@
+[
+  {
+    "id": "ret_1",
+    "orderId": "ORD-2023-8842",
+    "date": "2023-10-20",
+    "status": "Pending",
+    "reason": "Item defective on arrival.",
+    "items": [
+      { "name": "USB-C Hub Adapter", "quantity": 1, "price": 850.50 }
+    ],
+    "refundAmount": 850.50
+  }
+]
