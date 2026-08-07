@@ -14,8 +14,8 @@
 
 	let { data }: { data: PageData } = $props();
 
-	const user = data.user;
-	const session = data.currentSession;
+	const user = $derived(data.user);
+	const session = $derived(data.currentSession);
 
 	// Fallback avatar initials when the user has no profile image
 	let initials = $derived.by(() => {

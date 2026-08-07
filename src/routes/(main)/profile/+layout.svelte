@@ -28,7 +28,7 @@
 	const preferences = $derived(data.preferences);
 
 	// Initialize the reactive context
-	const ctx = setProfileContext(
+	let ctx = setProfileContext(
 		user,
 		addresses || [],
 		cancellations || [],
@@ -38,6 +38,7 @@
 		reviews || [],
 		preferences || { newsletter: false, promotions: false, smsNotifications: false }
 	);
+
 
 	// Mobile menu state
 	let isMobileMenuOpen = $state(false);
@@ -63,11 +64,12 @@
 	}
 </script>
 
-<div class="lg:py-16">
+<div class="lg:py-16 content-grid full-width">
 	<!-- Mobile Header -->
 	<header
-		class="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center sticky top-0 z-40"
+		class="lg:hidden! bg-white border-b border-gray-200 content-grid py-3 sticky top-0 z-40 full-width"
 	>
+	<div class="flex items-center justify-between">
 		<div class="flex items-center gap-3">
 			<button
 				onclick={() => (isMobileMenuOpen = !isMobileMenuOpen)}
@@ -79,19 +81,19 @@
 					<Menu class="w-5 h-5" />
 				{/if}
 			</button>
-			<h1 class="text-lg font-bold text-gray-900 font-serif tracking-tight">My Account</h1>
+			<a href="/profile" class="text-lg font-bold text-gray-900 font-serif tracking-tight">My Account</a>
 		</div>
 		<div class="flex items-center gap-2">
 			<span class="text-sm font-medium text-gray-700">{ctx.user?.name}</span>
 		</div>
+	</div>
 	</header>
 
 	<div class="flex gap-16">
 		<!-- Sidebar Navigation -->
 		<aside
-			class="
-      fixed inset-y-0 left-0 z-30 w-72 transform transition-transform duration-200 ease-in-out lg:translate-x-0 lg:sticky lg:h-auto
-      {isMobileMenuOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}"
+			class="fixed inset-y-0 left-0 z-90 w-72 transform transition-transform duration-200 ease-in-out lg:translate-x-0 lg:sticky lg:h-auto
+      {isMobileMenuOpen ? 'bg-white translate-x-0 shadow-2xl' : '-translate-x-full'}"
 		>
 			<div class="flex flex-col">
 				<!-- Desktop User Info -->
@@ -133,7 +135,7 @@
 		<!-- Mobile Overlay Backdrop -->
 		{#if isMobileMenuOpen}
 			<button
-				class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-20 lg:hidden"
+				class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-80 lg:hidden"
 				onclick={() => (isMobileMenuOpen = false)}
 			>
 				<span class="sr-only">Close Overlay</span>
@@ -141,7 +143,7 @@
 		{/if}
 
 		<!-- Main Content Area -->
-		<div class="flex-1">
+		<div class="flex-1 py-8 md:py-0">
 			{@render children()}
 		</div>
 	</div>
