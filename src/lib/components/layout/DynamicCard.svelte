@@ -21,6 +21,7 @@
 		hoverZoom?: boolean;
 		children?: Snippet;
 		class?: HTMLAttributes<HTMLElement>['class'];
+		// eslint-disable-next-line
 		[key: string]: any;
 	} = $props();
 </script>
@@ -61,7 +62,9 @@
 
 	<!-- 2. Overlay Layer -->
 	{#if overlayOpacity}
-		<div class={['absolute inset-0 rounded-3xl transition-opacity duration-300', overlayOpacity]}></div>
+		<div
+			class={['absolute inset-0 rounded-3xl transition-opacity duration-300', overlayOpacity]}
+		></div>
 	{/if}
 	<div
 		class="absolute inset-0 rounded-3xl ring-1 ring-inset ring-white/10 pointer-events-none"
@@ -70,7 +73,7 @@
 	<!-- 3. Dynamic Children Content Slot -->
 	{#if children}
 		<div
-			class="relative z-10 flex h-full w-full flex-col justify-between p-6 sm:p-8 lg:p-10 [&_[data-slot=button]]:w-fit [&_[data-slot=button]]:inline-flex [&_button]:w-fit [&_a[data-slot=button]]:w-fit"
+			class="relative z-10 flex h-full w-full flex-col justify-between p-6 sm:p-8 lg:p-10 **:data-[slot=button]:w-fit **:data-[slot=button]:inline-flex [&_button]:w-fit [&_a[data-slot=button]]:w-fit"
 		>
 			{@render children()}
 		</div>

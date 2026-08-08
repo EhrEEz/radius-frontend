@@ -1,5 +1,5 @@
 <script lang="ts">
-	import BannerSection from '$lib/components/layout/BannerSection.svelte';
+  import BannerSection from '$lib/components/layout/BannerSection.svelte';
 	import DynamicCard from '$lib/components/layout/DynamicCard.svelte';
 	import ProductCard from '$lib/components/product/ProductCard.svelte';
 	import { Button } from '$lib/components/ui/Button';
