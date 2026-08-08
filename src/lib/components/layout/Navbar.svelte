@@ -17,10 +17,10 @@
 		TicketPercent
 	} from '@lucide/svelte';
 	import { cart } from '$lib/components/cart/cart.svelte';
+	import SearchBar from '$lib/components/layout/SearchBar.svelte';
 
 	// Reactive state using Svelte 5 runes
 	let mobileMenuOpen = $state(false);
-	let searchQuery = $state('');
 	let categoriesOpen = $state(false);
 	let userMenuOpen = $state(false);
 	let mobileSearchOpen = $state(false);
@@ -72,13 +72,6 @@
 		{ name: 'Clearance', href: '/collections/clearance' }
 	];
 
-	function handleSearch(e: Event) {
-		e.preventDefault();
-		if (searchQuery.trim()) {
-			console.log('Searching for:', searchQuery);
-		}
-	}
-
 	function toggleMobileMenu() {
 		mobileMenuOpen = !mobileMenuOpen;
 		document.body.style.overflow = mobileMenuOpen ? 'hidden' : '';
@@ -113,213 +106,191 @@
 
 <header class="sticky top-0 z-50 bg-white border-b border-b-gray-200 content-grid">
 	<div class="relative">
-		<div>
-			<div class="flex items-center justify-between pt-2 lg:pt-3 pb-1">
-				<!-- Left Side: Logo, Categories, Search -->
-				<div class="flex items-center gap-2 lg:gap-4 flex-1">
-					<!-- Mobile Menu Button -->
-					<button
-						onclick={toggleMobileMenu}
-						class="lg:hidden p-2 -ml-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-full transition-colors"
-						aria-label="Toggle menu"
+		<div class="flex items-center justify-between pt-2 lg:pt-3 pb-1">
+			<!-- Left Side: Logo, Categories, Search -->
+			<div class="flex items-center gap-2 lg:gap-4 flex-1">
+				<!-- Mobile Menu Button -->
+				<button
+					onclick={toggleMobileMenu}
+					class="lg:hidden p-2 -ml-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-full transition-colors"
+					aria-label="Toggle menu"
+				>
+					{#if mobileMenuOpen}
+						<X class="w-6 h-6" />
+					{:else}
+						<Menu class="w-6 h-6" />
+					{/if}
+				</button>
+
+				<!-- Logo -->
+				<a href="/" class="flex items-center gap-2 shrink-0">
+					<div
+						class="w-8 h-8 lg:w-10 lg:h-10 bg-black rounded-full flex items-center justify-center"
 					>
-						{#if mobileMenuOpen}
-							<X class="w-6 h-6" />
-						{:else}
-							<Menu class="w-6 h-6" />
-						{/if}
+						<span class="text-white font-semibold text-base lg:text-xl leading-tight font-serif"
+							>R</span
+						>
+					</div>
+					<span class="text-xl lg:text-2xl font-semibold text-gray-900 hidden sm:block font-serif"
+						>Radius</span
+					>
+				</a>
+
+				<!-- Categories Button (Desktop) -->
+				<div class="relative hidden lg:block">
+					<button
+						onclick={() => (categoriesOpen = !categoriesOpen)}
+						class="categories-button flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-full transition-colors"
+					>
+						<Menu class="w-4 h-4" />
+						<span class="font-medium">Categories</span>
+						<ChevronDown
+							class="w-4 h-4 transition-transform {categoriesOpen ? 'rotate-180' : ''}"
+						/>
 					</button>
 
-					<!-- Logo -->
-					<a href="/" class="flex items-center gap-2 shrink-0">
+					<!-- Categories Dropdown -->
+					{#if categoriesOpen}
 						<div
-							class="w-8 h-8 lg:w-10 lg:h-10 bg-black rounded-full flex items-center justify-center"
+							class="categories-dropdown absolute top-full left-0 mt-2 w-56 bg-white border border-gray-100 rounded-2xl py-2 z-50"
 						>
-							<span class="text-white font-semibold text-base lg:text-xl leading-tight font-serif"
-								>R</span
-							>
+							{#each categories as category (category)}
+								<a
+									href={category.href}
+									class="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+								>
+									<category.icon class="w-5 h-5" />
+									<span>{category.name}</span>
+								</a>
+							{/each}
 						</div>
-						<span class="text-xl lg:text-2xl font-semibold text-gray-900 hidden sm:block font-serif"
-							>Radius</span
-						>
-					</a>
+					{/if}
+				</div>
 
-					<!-- Categories Button (Desktop) -->
-					<div class="relative hidden lg:block">
-						<button
-							onclick={() => (categoriesOpen = !categoriesOpen)}
-							class="categories-button flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-full transition-colors"
+				<!-- Search Bar (Desktop) -->
+				<SearchBar class="hidden lg:flex flex-1 mx-4" />
+
+				<!-- Mobile Search Button -->
+				<button
+					onclick={toggleMobileSearch}
+					class="lg:hidden p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-full transition-colors"
+					aria-label="Search"
+				>
+					<Search class="w-5 h-5" />
+				</button>
+			</div>
+
+			<!-- Right Side: Wishlist, Cart, User -->
+			<div class="flex items-center gap-1 lg:gap-3">
+				<!-- Wishlist -->
+				<a
+					href="/profile/favorites"
+					class="relative p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-full transition-colors"
+					aria-label="Wishlist"
+				>
+					<Heart class="w-5 h-5" />
+					{#if wishlistCount > 0}
+						<span
+							class="absolute -top-0.5 -right-0.5 lg:-top-1 lg:-right-1 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex place-content-center"
 						>
-							<Menu class="w-4 h-4" />
-							<span class="font-medium">Categories</span>
+							{wishlistCount}
+						</span>
+					{/if}
+				</a>
+
+				<!-- Cart -->
+				<button
+					class="relative p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-full transition-colors"
+					aria-label="Cart"
+					onclick={() => {
+						cart.toggle();
+					}}
+				>
+					<ShoppingCart class="w-5 h-5" />
+					{#if cartCount > 0}
+						<span
+							class="absolute -top-0.5 -right-0.5 lg:-top-1 lg:-right-1 bg-black text-white text-xs font-bold rounded-full w-4 h-4 flex place-content-center"
+						>
+							{cartCount}
+						</span>
+					{/if}
+				</button>
+
+				<!-- User Auth (Desktop) -->
+				<div class="relative hidden lg:block">
+					{#if isLoggedIn}
+						<button
+							onclick={() => (userMenuOpen = !userMenuOpen)}
+							class="user-menu-button flex items-center gap-2 px-3 py-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-full transition-colors"
+						>
+							<div
+								class="w-8 h-8 bg-linear-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-semibold text-sm leading-tight"
+							>
+								JD
+							</div>
+							<span class="font-medium">John</span>
 							<ChevronDown
 								class="w-4 h-4 transition-transform {categoriesOpen ? 'rotate-180' : ''}"
 							/>
 						</button>
 
-						<!-- Categories Dropdown -->
-						{#if categoriesOpen}
+						<!-- User Menu Dropdown -->
+						{#if userMenuOpen}
 							<div
-								class="categories-dropdown absolute top-full left-0 mt-2 w-56 bg-white border border-gray-100 rounded-2xl py-2 z-50"
+								class="user-menu-dropdown absolute top-full right-0 mt-2 w-56 bg-white border border-gray-100 rounded-2xl py-2 z-50"
 							>
-								{#each categories as category (category)}
-									<a
-										href={category.href}
-										class="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
-									>
-										<category.icon class="w-5 h-5" />
-										<span>{category.name}</span>
-									</a>
-								{/each}
+								<a
+									href="/account"
+									class="block px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+								>
+									My Account
+								</a>
+								<a
+									href="/orders"
+									class="block px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+								>
+									Orders
+								</a>
+								<a
+									href="/wishlist"
+									class="block px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+								>
+									Wishlist
+								</a>
+								<hr class="my-2 border-gray-100" />
+								<button
+									class="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors"
+								>
+									Logout
+								</button>
 							</div>
 						{/if}
-					</div>
-
-					<!-- Search Bar (Desktop) -->
-					<form onsubmit={handleSearch} class="hidden lg:flex flex-1 mx-4">
-						<div class="relative w-full">
-							<input
-								type="text"
-								bind:value={searchQuery}
-								placeholder="Search for products, brands and more..."
-								class="w-full px-4 py-2.5 pl-11 bg-gray-50 border border-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all"
-							/>
-							<Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-						</div>
-					</form>
-
-					<!-- Mobile Search Button -->
-					<button
-						onclick={toggleMobileSearch}
-						class="lg:hidden p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-full transition-colors"
-						aria-label="Search"
-					>
-						<Search class="w-5 h-5" />
-					</button>
+					{:else}
+						<a
+							href="/login"
+							class="flex items-center gap-2 px-4 py-2 bg-black text-white hover:bg-gray-800 rounded-full transition-colors font-semibold"
+						>
+							<span>Login</span>
+						</a>
+					{/if}
 				</div>
 
-				<!-- Right Side: Wishlist, Cart, User -->
-				<div class="flex items-center gap-1 lg:gap-3">
-					<!-- Wishlist -->
-					<a
-						href="/wishlist"
-						class="relative p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-full transition-colors"
-						aria-label="Wishlist"
-					>
-						<Heart class="w-5 h-5" />
-						{#if wishlistCount > 0}
-							<span
-								class="absolute -top-0.5 -right-0.5 lg:-top-1 lg:-right-1 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex place-content-center"
-							>
-								{wishlistCount}
-							</span>
-						{/if}
-					</a>
-
-					<!-- Cart -->
-					<button
-						class="relative p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-full transition-colors"
-						aria-label="Cart"
-						onclick={() => {
-							cart.toggle();
-						}}
-					>
-						<ShoppingCart class="w-5 h-5" />
-						{#if cartCount > 0}
-							<span
-								class="absolute -top-0.5 -right-0.5 lg:-top-1 lg:-right-1 bg-black text-white text-xs font-bold rounded-full w-4 h-4 flex place-content-center"
-							>
-								{cartCount}
-							</span>
-						{/if}
-					</button>
-
-					<!-- User Auth (Desktop) -->
-					<div class="relative hidden lg:block">
-						{#if isLoggedIn}
-							<button
-								onclick={() => (userMenuOpen = !userMenuOpen)}
-								class="user-menu-button flex items-center gap-2 px-3 py-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-full transition-colors"
-							>
-								<div
-									class="w-8 h-8 bg-linear-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-semibold text-sm leading-tight"
-								>
-									JD
-								</div>
-								<span class="font-medium">John</span>
-								<ChevronDown
-									class="w-4 h-4 transition-transform {categoriesOpen ? 'rotate-180' : ''}"
-								/>
-							</button>
-
-							<!-- User Menu Dropdown -->
-							{#if userMenuOpen}
-								<div
-									class="user-menu-dropdown absolute top-full right-0 mt-2 w-56 bg-white border border-gray-100 rounded-2xl py-2 z-50"
-								>
-									<a
-										href="/account"
-										class="block px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
-									>
-										My Account
-									</a>
-									<a
-										href="/orders"
-										class="block px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
-									>
-										Orders
-									</a>
-									<a
-										href="/wishlist"
-										class="block px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
-									>
-										Wishlist
-									</a>
-									<hr class="my-2 border-gray-100" />
-									<button
-										class="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors"
-									>
-										Logout
-									</button>
-								</div>
-							{/if}
-						{:else}
-							<a
-								href="/login"
-								class="flex items-center gap-2 px-4 py-2 bg-black text-white hover:bg-gray-800 rounded-full transition-colors font-semibold"
-							>
-								<span>Login</span>
-							</a>
-						{/if}
-					</div>
-
-					<!-- Mobile User Button -->
-					<button
-						class="lg:hidden p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-full transition-colors"
-						aria-label="User menu"
-					>
-						<User class="w-5 h-5" />
-					</button>
-				</div>
+				<!-- Mobile User Button -->
+				<button
+					class="lg:hidden p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-full transition-colors"
+					aria-label="User menu"
+				>
+					<User class="w-5 h-5" />
+				</button>
 			</div>
-
-			<!-- Mobile Search Bar -->
-			{#if mobileSearchOpen}
-				<div class="lg:hidden pb-4 animate-slideDown">
-					<form onsubmit={handleSearch}>
-						<div class="relative">
-							<input
-								type="text"
-								bind:value={searchQuery}
-								placeholder="Search for products..."
-								class="w-full px-4 py-3 pl-11 bg-gray-50 border border-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-black"
-							/>
-							<Search class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-						</div>
-					</form>
-				</div>
-			{/if}
 		</div>
+
+		<!-- Mobile Search Bar -->
+		{#if mobileSearchOpen}
+			<div class="lg:hidden pb-4 animate-slideDown">
+				<SearchBar placeholder="Search for products..." />
+			</div>
+		{/if}
 	</div>
 
 	<!-- Second Row: Collections -->

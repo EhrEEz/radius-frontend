@@ -441,7 +441,7 @@
 			</aside>
 
 			<!-- Main Content -->
-			<main class="flex-1">
+			<div class="flex-1">
 				<!-- Active Filters Pills -->
 				{#if selectedCategories.length > 0 || minPrice || maxPrice || minRating || searchQuery}
 					<div class="mb-6 flex flex-wrap items-center gap-2">
@@ -517,7 +517,7 @@
 						<Button class="mt-4" size="sm" onclick={clearAllFilters}>Clear all filters</Button>
 					</div>
 				{/if}
-			</main>
+			</div>
 		</div>
 	</div>
 </div>
