@@ -1,16 +1,16 @@
 # Graph Report - radius-frontend  (2026-08-08)
 
 ## Corpus Check
-- 83 files · ~34,288 words
+- 88 files · ~43,234 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 305 nodes · 410 edges · 55 communities (21 shown, 34 thin omitted)
+- 310 nodes · 419 edges · 55 communities (21 shown, 34 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 8 edges (avg confidence: 0.73)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `57b1469d`
+- Built from commit: `07ed524c`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -33,11 +33,11 @@
 - Caveman Stats Overview
 - eslint
 - eslint.config.js
+- clsx
 - @eslint/js
 - eslint-plugin-svelte
 - globals
 - @lucide/svelte
-- dompurify
 - postgres
 - prettier
 - prettier-plugin-svelte
@@ -103,7 +103,7 @@ Cohesion: 0.10
 Nodes (10): AddToCartPayload, cart, CartItem, CartItemAttributes, discountAmount, handleSubmit(), nextStep(), shippingFee (+2 more)
 
 ### Community 2 - "product.ts"
-Cohesion: 0.08
+Cohesion: 0.07
 Nodes (13): close(), handleKeydown(), Categories, Image, Price, Product, ProductCard, ProductVariant (+5 more)
 
 ### Community 3 - "validate.py"
@@ -111,7 +111,7 @@ Cohesion: 0.15
 Nodes (23): benchmark_pair(), count_tokens(), main(), print_table(), Path, count_bullets(), extract_code_blocks(), extract_headings() (+15 more)
 
 ### Community 4 - "Button/index.ts"
-Cohesion: 0.10
+Cohesion: 0.09
 Nodes (4): WithElementRef, WithoutChild, WithoutChildren, WithoutChildrenOrChild
 
 ### Community 5 - "Cavecrew Skill"
@@ -128,7 +128,7 @@ Nodes (13): name, private, scripts, build, check, check:watch, dev, format (+5 m
 
 ### Community 10 - "devDependencies"
 Cohesion: 0.22
-Nodes (9): clsx, devDependencies, clsx, svelte, @tailwindcss/vite, typescript-eslint, svelte, @tailwindcss/vite (+1 more)
+Nodes (9): devDependencies, dompurify, svelte, @tailwindcss/vite, typescript-eslint, dompurify, svelte, @tailwindcss/vite (+1 more)
 
 ### Community 11 - "app.d.ts"
 Cohesion: 0.40
@@ -146,12 +146,12 @@ Nodes (3): Postgres Database Service, Svelte CLI Setup, SvelteKit App Template
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `devDependencies` connect `devDependencies` to `scripts`, `eslint-config-prettier`, `eslint`, `@eslint/js`, `eslint-plugin-svelte`, `globals`, `@lucide/svelte`, `dompurify`, `postgres`, `prettier`, `prettier-plugin-svelte`, `prettier-plugin-tailwindcss`, `svelte-check`, `@sveltejs/adapter-auto`, `@sveltejs/kit`, `@sveltejs/vite-plugin-svelte`, `swiper`, `tailwind-merge`, `tailwind-variants`, `tailwindcss`, `@tailwindcss/forms`, `@tailwindcss/typography`, `@types/node`, `typescript`, `vite`?**
-  _High betweenness centrality (0.050) - this node is a cross-community bridge._
+- **Why does `devDependencies` connect `devDependencies` to `scripts`, `eslint-config-prettier`, `eslint`, `clsx`, `@eslint/js`, `eslint-plugin-svelte`, `globals`, `@lucide/svelte`, `postgres`, `prettier`, `prettier-plugin-svelte`, `prettier-plugin-tailwindcss`, `svelte-check`, `@sveltejs/adapter-auto`, `@sveltejs/kit`, `@sveltejs/vite-plugin-svelte`, `swiper`, `tailwind-merge`, `tailwind-variants`, `tailwindcss`, `@tailwindcss/forms`, `@tailwindcss/typography`, `@types/node`, `typescript`, `vite`?**
+  _High betweenness centrality (0.048) - this node is a cross-community bridge._
 - **Why does `ShoppingCart` connect `ShoppingCart` to `checkout/+page.svelte`?**
-  _High betweenness centrality (0.023) - this node is a cross-community bridge._
+  _High betweenness centrality (0.024) - this node is a cross-community bridge._
 - **Why does `validate()` connect `validate.py` to `compress.py`?**
-  _High betweenness centrality (0.013) - this node is a cross-community bridge._
+  _High betweenness centrality (0.012) - this node is a cross-community bridge._
 - **What connects `gitignorePath`, `name`, `private` to the rest of the system?**
   _94 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `compress.py` be split into smaller, more focused modules?**
@@ -159,4 +159,4 @@ _Questions this graph is uniquely positioned to answer:_
 - **Should `checkout/+page.svelte` be split into smaller, more focused modules?**
   _Cohesion score 0.09881422924901186 - nodes in this community are weakly interconnected._
 - **Should `product.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.07507507507507508 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07254623044096728 - nodes in this community are weakly interconnected._

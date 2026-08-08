@@ -230,8 +230,8 @@
     "semantic_hash": ""
   },
   "src/routes/(main)/+page.svelte": {
-    "mtime": 1786201915.0715737,
-    "ast_hash": "c9443663ad5449fb058e669f42ee8fe8",
+    "mtime": 1786202308.145396,
+    "ast_hash": "812386aa3a99ba3a879a7898f81738ae",
     "semantic_hash": ""
   },
   "src/routes/(main)/categories/+page.svelte": {
@@ -265,9 +265,9 @@
     "semantic_hash": "227050db9c75aa7045819cd83cb41ee4"
   },
   "src/routes/(main)/collections/+page.svelte": {
-    "mtime": 1786104652.9278653,
-    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
-    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+    "mtime": 1786203689.7572803,
+    "ast_hash": "32a4ee7bf00aab9dbd71c82f678b2516",
+    "semantic_hash": ""
   },
   "src/routes/(main)/collections/[slug]/+page.svelte": {
     "mtime": 1786104652.928131,
@@ -425,18 +425,43 @@
     "semantic_hash": "a0d1b540c1b9a2a920d5f6cae983118a"
   },
   "src/lib/components/layout/DynamicCard.svelte": {
-    "mtime": 1786201859.633027,
-    "ast_hash": "aadca515f87294f4e914e2856dcd9ac6",
+    "mtime": 1786203578.47552,
+    "ast_hash": "ca53f2c68c51f3c069b38a17615b36db",
     "semantic_hash": ""
   },
   "src/lib/components/layout/Footer.svelte": {
-    "mtime": 1786201879.4052472,
-    "ast_hash": "ed220479c7ee70b665debc3f008f8424",
+    "mtime": 1786203116.8722692,
+    "ast_hash": "2c370281996a4a3367a1c901a9b41a63",
     "semantic_hash": ""
   },
   "src/lib/components/sections/CollectionSlider.svelte": {
     "mtime": 1786201885.240205,
     "ast_hash": "38450bf5762a362b81a4211d3c294d29",
+    "semantic_hash": ""
+  },
+  "src/routes/(main)/blog/+page.svelte": {
+    "mtime": 1786203929.559526,
+    "ast_hash": "e1a028577a0bfb68f8bb3ce7c951be8d",
+    "semantic_hash": ""
+  },
+  "src/routes/(main)/blog/[slug]/+page.svelte": {
+    "mtime": 1786203889.0531611,
+    "ast_hash": "21b9cf16346f10b1ed070eb207bda73c",
+    "semantic_hash": ""
+  },
+  "src/routes/(main)/help/+page.svelte": {
+    "mtime": 1786203919.48669,
+    "ast_hash": "d2b13695c15354a422c40e4820e7e69a",
+    "semantic_hash": ""
+  },
+  "src/routes/(main)/privacy/+page.svelte": {
+    "mtime": 1786203898.6333926,
+    "ast_hash": "233e1be986d8a80228a3a6a221730ae8",
+    "semantic_hash": ""
+  },
+  "src/routes/(main)/terms/+page.svelte": {
+    "mtime": 1786203906.6449244,
+    "ast_hash": "d0015b9c499f3bb46c9b07ec9b55d3e0",
     "semantic_hash": ""
   }
 }

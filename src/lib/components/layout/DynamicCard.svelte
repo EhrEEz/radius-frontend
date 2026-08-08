@@ -69,7 +69,9 @@
 
 	<!-- 3. Dynamic Children Content Slot -->
 	{#if children}
-		<div class="relative z-10 flex h-full w-full flex-col justify-between p-6 sm:p-8 lg:p-10">
+		<div
+			class="relative z-10 flex h-full w-full flex-col justify-between p-6 sm:p-8 lg:p-10 [&_[data-slot=button]]:w-fit [&_[data-slot=button]]:inline-flex [&_button]:w-fit [&_a[data-slot=button]]:w-fit"
+		>
 			{@render children()}
 		</div>
 	{/if}
