@@ -1,5 +1,7 @@
 <script lang="ts">
 	import type { HTMLAttributes } from 'svelte/elements';
+	import type { Snippet } from 'svelte';
+	import { cn } from '$lib/utils';
 
 	// Svelte 5 Runes Props
 	let {
@@ -12,6 +14,7 @@
 		overlayOpacity = 'bg-black/40', // Adjust to ensure text readability over media
 		aspectRatio = 'aspect-[5/1]',
 		align = 'center', // 'left' | 'center' | 'right'
+		children = undefined,
 		class: className
 	}: {
 		title: string;
@@ -23,6 +26,7 @@
 		overlayOpacity?: string;
 		aspectRatio?: string;
 		align?: 'left' | 'center' | 'right';
+		children?: Snippet;
 		class?: HTMLAttributes<HTMLElement>['class'];
 	} = $props();
 
@@ -39,7 +43,7 @@
 	});
 </script>
 
-<section class={['relative w-full overflow-hidden my-8', aspectRatio, className]}>
+<section class={cn('relative w-full overflow-hidden my-8', aspectRatio, className)}>
 	<!-- 1. Background Layer -->
 	{#if bgVideo}
 		<video
@@ -86,6 +90,12 @@
 				<p class="mt-3 text-base text-balance {textColor} md:text-base opacity-90">
 					{subtitle}
 				</p>
+			{/if}
+
+			{#if children}
+				<div class="mt-6 flex flex-wrap gap-4">
+					{@render children()}
+				</div>
 			{/if}
 		</div>
 	</div>

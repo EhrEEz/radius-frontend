@@ -184,7 +184,7 @@
 			<div class="flex items-center gap-1 lg:gap-3">
 				<!-- Wishlist -->
 				<a
-					href="/wishlist"
+					href="/profile/favorites"
 					class="relative p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-full transition-colors"
 					aria-label="Wishlist"
 				>

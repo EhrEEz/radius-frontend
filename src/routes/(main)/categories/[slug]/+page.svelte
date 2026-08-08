@@ -615,10 +615,10 @@
 <BannerSection
 	title="Bags"
 	subtitle="Crafted for the journey, designed for everyday life."
-	bgColor="bg-amber-100"
-	textColor="text-amber-950"
-	overlayOpacity="bg-transparent"
-	align="center"
+	bgImage="https://images.unsplash.com/photo-1524679813234-66a389fe1a42?w=1366&h=600&fit=crop"
+	textColor="text-white"
+	overlayOpacity="bg-gray-950/40"
+	align="left"
 />
 
 <div class="py-8">
